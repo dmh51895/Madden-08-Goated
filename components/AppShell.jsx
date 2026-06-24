@@ -519,17 +519,6 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
         {/* Brand strip */}
         <div style={{ padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${border}`, gap: 12, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-            <button
-              onClick={() => { if (typeof window !== "undefined") window.history.back(); }}
-              style={{
-                fontSize: 11, fontFamily: "inherit", padding: "3px 9px", borderRadius: 4,
-                border: "1px solid #2a2520", background: "transparent",
-                color: textMuted, cursor: "pointer", letterSpacing: 1, fontWeight: "bold",
-              }}
-              title="Go back"
-              onMouseOver={(e) => { e.currentTarget.style.color = "#26867a"; e.currentTarget.style.borderColor = "#26867a"; }}
-              onMouseOut={(e) => { e.currentTarget.style.color = textMuted; e.currentTarget.style.borderColor = "#2a2520"; }}
-            >← BACK</button>
             <span
               onClick={() => setPanel("home")}
               style={{ fontSize: 20, fontWeight: "bold", color: "#c41e1e", letterSpacing: 3, cursor: "pointer" }}

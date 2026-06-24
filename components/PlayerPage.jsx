@@ -66,6 +66,81 @@ export default function PlayerPage({
     if (typeof navigateToPlayer === "function") navigateToPlayer(id);
   };
 
+  // ── Hooks below this line must always run in the same order. ─────
+  // ── No early returns above them — gate logic on `player` being   ─
+  // ── non-null inside each hook instead.                            ─
+
+  // Sorted roster by player ID, for Prev/Next navigation.
+  const sortedIds = useMemo(() => {
+    return [...roster]
+      .map((p) => String(p.playerId))
+      .sort((a, b) => {
+        const na = Number(a), nb = Number(b);
+        if (Number.isFinite(na) && Number.isFinite(nb)) return na - nb;
+        return a.localeCompare(b);
+      });
+  }, [roster]);
+
+  const currentIdx = player ? sortedIds.indexOf(String(player.playerId)) : -1;
+  const prevId = currentIdx > 0 ? sortedIds[currentIdx - 1] : null;
+  const nextId = currentIdx >= 0 && currentIdx < sortedIds.length - 1 ? sortedIds[currentIdx + 1] : null;
+
+  // Portrait load (IndexedDB-backed, blob → object URL).
+  const [portraitUrl, setPortraitUrl] = useState(null);
+  const portraitUrlRef = useRef(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (portraitUrlRef.current) {
+      try { URL.revokeObjectURL(portraitUrlRef.current); } catch {}
+      portraitUrlRef.current = null;
+    }
+    setPortraitUrl(null);
+    if (!player) return;
+    (async () => {
+      const url = await getPortraitURL(player.playerId);
+      if (cancelled) {
+        if (url) { try { URL.revokeObjectURL(url); } catch {} }
+        return;
+      }
+      portraitUrlRef.current = url;
+      setPortraitUrl(url);
+    })();
+    return () => { cancelled = true; };
+  }, [player?.playerId]);
+
+  // Revoke any held object URL on unmount.
+  useEffect(() => () => {
+    if (portraitUrlRef.current) {
+      try { URL.revokeObjectURL(portraitUrlRef.current); } catch {}
+    }
+  }, []);
+
+  const fileInputRef = useRef(null);
+  const handlePortraitUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !player) return;
+    await setPortrait(player.playerId, file);
+    const newUrl = await getPortraitURL(player.playerId);
+    if (portraitUrlRef.current) { try { URL.revokeObjectURL(portraitUrlRef.current); } catch {} }
+    portraitUrlRef.current = newUrl;
+    setPortraitUrl(newUrl);
+    e.target.value = "";
+  };
+  const handlePortraitClear = async () => {
+    if (!player) return;
+    await clearPortrait(player.playerId);
+    if (portraitUrlRef.current) { try { URL.revokeObjectURL(portraitUrlRef.current); } catch {} }
+    portraitUrlRef.current = null;
+    setPortraitUrl(null);
+  };
+
+  const goPrev = () => prevId && navigateToPlayer?.(prevId);
+  const goNext = () => nextId && navigateToPlayer?.(nextId);
+  const goAllPlayers = () => navigateToPlayer?.(null);
+  const goBack = () => { if (typeof window !== "undefined") window.history.back(); };
+
+  // ── Early returns (safe — all hooks have already run above) ─────
+
   if (!roster.length) {
     return (
       <div style={{ color: "#666", fontSize: 10 }}>
@@ -279,77 +354,6 @@ export default function PlayerPage({
 
   // ── Player profile (specific player) ──────────────────────
 
-  // Sorted roster by player ID, for Prev/Next navigation.
-  // Numeric sort when IDs are numeric; lexicographic fallback otherwise.
-  const sortedIds = useMemo(() => {
-    return [...roster]
-      .map((p) => String(p.playerId))
-      .sort((a, b) => {
-        const na = Number(a), nb = Number(b);
-        if (Number.isFinite(na) && Number.isFinite(nb)) return na - nb;
-        return a.localeCompare(b);
-      });
-  }, [roster]);
-
-  const currentIdx = player ? sortedIds.indexOf(String(player.playerId)) : -1;
-  const prevId = currentIdx > 0 ? sortedIds[currentIdx - 1] : null;
-  const nextId = currentIdx >= 0 && currentIdx < sortedIds.length - 1 ? sortedIds[currentIdx + 1] : null;
-
-  // ── Portrait load (IndexedDB-backed, blob → object URL) ──
-  const [portraitUrl, setPortraitUrl] = useState(null);
-  const portraitUrlRef = useRef(null);
-  useEffect(() => {
-    let cancelled = false;
-    // Revoke any previously-created URL before loading a new one
-    if (portraitUrlRef.current) {
-      try { URL.revokeObjectURL(portraitUrlRef.current); } catch {}
-      portraitUrlRef.current = null;
-    }
-    setPortraitUrl(null);
-    if (!player) return;
-    (async () => {
-      const url = await getPortraitURL(player.playerId);
-      if (cancelled) {
-        if (url) { try { URL.revokeObjectURL(url); } catch {} }
-        return;
-      }
-      portraitUrlRef.current = url;
-      setPortraitUrl(url);
-    })();
-    return () => { cancelled = true; };
-  }, [player?.playerId]);
-
-  // Cleanup on unmount
-  useEffect(() => () => {
-    if (portraitUrlRef.current) {
-      try { URL.revokeObjectURL(portraitUrlRef.current); } catch {}
-    }
-  }, []);
-
-  const fileInputRef = useRef(null);
-  const handlePortraitUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file || !player) return;
-    await setPortrait(player.playerId, file);
-    // Reload to show the new portrait
-    const newUrl = await getPortraitURL(player.playerId);
-    if (portraitUrlRef.current) { try { URL.revokeObjectURL(portraitUrlRef.current); } catch {} }
-    portraitUrlRef.current = newUrl;
-    setPortraitUrl(newUrl);
-    e.target.value = ""; // allow re-uploading same file
-  };
-  const handlePortraitClear = async () => {
-    if (!player) return;
-    await clearPortrait(player.playerId);
-    if (portraitUrlRef.current) { try { URL.revokeObjectURL(portraitUrlRef.current); } catch {} }
-    portraitUrlRef.current = null;
-    setPortraitUrl(null);
-  };
-
-  const goPrev = () => prevId && navigateToPlayer?.(prevId);
-  const goNext = () => nextId && navigateToPlayer?.(nextId);
-  const goAllPlayers = () => navigateToPlayer?.(null);  // clears selection → directory
-
   const collegeName = colleges?.[player.collegeId] || player.collegeId || "Unknown";
   const teamC = teamColor(player.teamAbbr);
 
@@ -416,27 +420,22 @@ export default function PlayerPage({
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 12, alignItems: "center", flexWrap: "wrap" }}>
         <span style={{ fontSize: 12, fontWeight: "bold", color: "#a8651e" }}>👤 PLAYER PROFILE</span>
         <div style={{ flex: 1 }} />
-        {/* Player navigation: prev / all / next */}
-        <button
-          onClick={goPrev}
-          disabled={!prevId}
-          style={navBtnStyle(!!prevId)}
-          title={prevId ? "Previous player (by ID)" : "No previous player"}
-        >← PREV</button>
-        <button
-          onClick={goAllPlayers}
-          style={navBtnStyle(true, "#a8651e")}
-          title="Back to player directory"
-        >☰ ALL PLAYERS</button>
-        <button
-          onClick={goNext}
-          disabled={!nextId}
-          style={navBtnStyle(!!nextId)}
-          title={nextId ? "Next player (by ID)" : "No next player"}
-        >NEXT →</button>
+        {/* Small circular icon navigation: back · prev · home · next */}
+        <IconBtn onClick={goBack}        title="Browser back"      ariaLabel="Back">
+          <ArrowIcon dir="left" stroke="#888" />
+        </IconBtn>
+        <IconBtn onClick={goPrev}        disabled={!prevId}        title={prevId ? "Previous player" : "No previous player"} ariaLabel="Previous player">
+          <ArrowIcon dir="left" stroke={prevId ? "#bbb" : "#333"} />
+        </IconBtn>
+        <IconBtn onClick={goAllPlayers}  title="All players"       ariaLabel="All players">
+          <HomeIcon stroke="#bbb" />
+        </IconBtn>
+        <IconBtn onClick={goNext}        disabled={!nextId}        title={nextId ? "Next player" : "No next player"} ariaLabel="Next player">
+          <ArrowIcon dir="right" stroke={nextId ? "#bbb" : "#333"} />
+        </IconBtn>
       </div>
 
       {FilterBar}
@@ -895,16 +894,57 @@ function StatCell({ label, value, kind, small }) {
   );
 }
 
-function navBtnStyle(enabled, accentColor) {
-  const c = accentColor || "#15803d";
-  return {
-    fontSize: 9, fontFamily: "inherit", padding: "5px 12px", borderRadius: 4,
-    border: `1px solid ${enabled ? c : "#222"}`,
-    background: enabled ? `${c}22` : "transparent",
-    color: enabled ? c : "#444",
-    cursor: enabled ? "pointer" : "not-allowed",
-    letterSpacing: 1, fontWeight: "bold", whiteSpace: "nowrap",
-  };
+// ─────────────────────────────────────────────────────────────
+// Small circular icon button — transparent background, thin
+// border, subtle hover. Like image 3 but ~28px and integrated
+// into the dark theme.
+// ─────────────────────────────────────────────────────────────
+function IconBtn({ onClick, disabled, title, ariaLabel, children }) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      aria-label={ariaLabel || title}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        width: 28, height: 28, borderRadius: "50%",
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        background: "transparent",
+        border: `1px solid ${disabled ? "#222" : hover ? "#26867a" : "#333"}`,
+        color: disabled ? "#333" : hover ? "#26867a" : "#bbb",
+        cursor: disabled ? "not-allowed" : "pointer",
+        padding: 0,
+        transition: "all 0.12s ease",
+        fontFamily: "inherit",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ArrowIcon({ dir = "left", stroke = "currentColor" }) {
+  // Simple chevron, no surrounding circle (parent button is the circle).
+  const path = dir === "left" ? "M13 5 L7 11 L13 17" : "M9 5 L15 11 L9 17";
+  return (
+    <svg width="14" height="14" viewBox="0 0 22 22" fill="none" stroke={stroke} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={path} />
+    </svg>
+  );
+}
+
+function HomeIcon({ stroke = "currentColor" }) {
+  // Tiny hamburger / list icon — "all players directory"
+  return (
+    <svg width="14" height="14" viewBox="0 0 22 22" fill="none" stroke={stroke} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="4" y1="6"  x2="18" y2="6"  />
+      <line x1="4" y1="11" x2="18" y2="11" />
+      <line x1="4" y1="16" x2="18" y2="16" />
+    </svg>
+  );
 }
 
 // ─────────────────────────────────────────────────────────────
