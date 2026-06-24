@@ -45,7 +45,6 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   const [panel, setPanel] = useState(initialPanel);
   const [selectedTeam, setSelectedTeam] = useState(initialTeam);
   const [selectedPlayer, setSelectedPlayer] = useState(initialPlayer);
-  const [darkMode, setDarkMode] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [teamFilter, setTeamFilter] = useState(initialTeam);
 
@@ -98,6 +97,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   ])).filter((y) => Number.isFinite(y)).sort((a, b) => b - a);
   const seasonData = getSeasonData(appData, currentSeason);
   const settings = seasonData.settings || {};
+  const darkMode = settings.darkMode !== undefined ? settings.darkMode : true;
   const toggleSettings = settings.toggleSettings || {};
   // Homepage hero/GOTW images (stored as data URLs in appData)
   const newsImage = seasonData.newsImage || null;
@@ -456,10 +456,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
     setSelectedTeam(teamAbbr);
     setTeamFilter(teamAbbr);
     setPanel("teams");
-    if (typeof window !== "undefined") {
-      router.push(`/roster/${teamAbbr}/${currentSeason}/`, { scroll: false });
-    }
-  }, [router, currentSeason]);
+  }, []);
 
   const panels = [
     { id: "home", label: "🏠 HOME", color: "#c41e1e" },
@@ -581,7 +578,6 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
         return (
           <SettingsPage
             darkMode={darkMode}
-            setDarkMode={setDarkMode}
             settings={settings}
             onUpdateSettings={handleSettingsUpdate}
             currentSeason={currentSeason}
@@ -618,18 +614,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
       {/* ── Header ─────────────────────────────────────────── */}
       <div style={{ position: "sticky", top: 0, zIndex: 100, background: darkMode ? "#050505" : "#eee", borderBottom: `1px solid ${border}` }}>
         {/* Brand strip */}
-        <div style={{ padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${border}`, gap: 12, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-            <span
-              onClick={() => setPanel("home")}
-              style={{ fontSize: 20, fontWeight: "bold", color: "#c41e1e", letterSpacing: 3, cursor: "pointer" }}
-            >
-              PCFTBALL
-            </span>
-            <span style={{ fontSize: 8, color: textMuted, letterSpacing: 2, textTransform: "uppercase" }}>
-              Madden at its highest level
-            </span>
-          </div>
+        <div style={{ padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "flex-end", borderBottom: `1px solid ${border}`, gap: 8, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 8, color: textMuted, letterSpacing: 1 }}>SEASON</span>
             <select

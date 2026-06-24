@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ROLES, ROLE_LABELS } from "../data/adminRoles";
 
 export default function SettingsPage({
-  darkMode, setDarkMode, settings, onUpdateSettings,
+  darkMode, settings, onUpdateSettings,
   currentSeason, onSeasonChange,
   onRosterUpload, onCollegesUpload, onDraftBoardUpload, onDraftPicksUpload,
   onTradeChartUpload, onPlayerStatsUpload, onStandingsUpload, onTeamStatsUpload,
@@ -95,7 +95,7 @@ export default function SettingsPage({
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginTop: 12, marginBottom: 8 }}>DISPLAY</div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <span style={{ fontSize: 9, color: "#aaa" }}>Dark Mode</span>
-            <button onClick={() => setDarkMode(!darkMode)}
+            <button onClick={() => onUpdateSettings({ darkMode: !darkMode })}
               style={{ fontSize: 8, padding: "3px 10px", borderRadius: 8, border: `1px solid ${darkMode ? "#00d8a8" : "#333"}`, background: darkMode ? "#00d8a822" : "transparent", color: darkMode ? "#00d8a8" : "#aaa", cursor: "pointer" }}>
               {darkMode ? "ON" : "OFF"}
             </button>
