@@ -1,0 +1,4 @@
+32x32 transparent PNGs named by abbreviation (served at /logos/ABBR.png):
+ARI ATL BAL BUF CAR CHI CIN CLE DAL DEN DET GB HOU IND JAX KC
+LV LAC LAR MIA MIN NE NO NYG NYJ PHI PIT SF SEA TB TEN WAS
+(legacy aliases optional: OAK SD STL). Missing files self-hide.

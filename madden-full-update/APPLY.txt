@@ -1,0 +1,37 @@
+Madden-08-Goated — full update (rounds 1-3, all verified). Extract from repo
+ROOT, accept overwrites, then `npm run build`.
+
+FILES
+  components/PlayerPage.jsx     REPLACE   #310 crash fix
+  components/AppShell.jsx       REPLACE   leaderboard-click, hover dropdowns, logo+banner
+                                          header, confirm wiring, season mgmt + schedule
+  components/ConfirmDialog.jsx  NEW       reusable confirm dialog (provider + useConfirm)
+  app/layout.jsx                REPLACE   wraps app in <ConfirmProvider>
+  components/SettingsPage.jsx   REPLACE   uses in-app confirm (dropped native window.confirm)
+  components/HomePage.jsx       REPLACE   hero/news image ~40% smaller
+  components/SchedulesPage.jsx  REPLACE   custom schedule / tournament builder
+  components/TeamsPage.jsx      REPLACE   team HOME page + ROSTER toggle (images 4-7)
+  public/logos/                 ADD ART   32x32 team PNGs (see txt)
+  public/banner.png             ADD ART   ~990x167 header banner (optional)
+
+FEATURES / FIXES
+  #310 /player/ crash .......... filter hooks moved above the empty-roster guard
+  #1   leaderboard click ....... URL-sync no longer clobbers /player/{id} with /player/
+  #2   dropdowns .............. legacy hover menus; nav no longer clips them
+  #3   header ................. 32-team logo strip + banner above nav; hero shrunk ~40%
+  #4   team pages ............. TEAM HOME (GM profile, team stats, picks, trade block,
+                                injury report, rookie class, schedule, year-by-year,
+                                PASSING/RUSHING/RECEIVING) + ROSTER depth-chart toggle
+  #5   tournaments ........... arbitrary years (e.g. 2000) via "New season/tournament";
+                                custom schedule builder (week=round) with add/remove
+  #6   historical consistency . everything already season-scoped; added carry-forward
+                                (clone prior year's roster/board/picks/trade chart)
+  #7   confirmations ......... every mutation routes through one in-app confirm dialog;
+                                Cancel aborts, OK applies (verified Cancel preserves data)
+
+VERIFIED (clean build + headless browser vs the real 1,858-player roster)
+  build 0 errors (~2,330 pages) · /player/ no crash · leaderboard -> /player/548 (Mahomes)
+  · hover LEAGUE shows items · header 32 logos + banner element · Clear-All dialog +
+  Cancel preserves data · carry-forward cloned 1,858 players into new year 2000 ·
+  custom LV@KC game added to 2000 · selector lists 2000 + "New" · TEAM HOME sections
+  render · ROSTER toggle shows depth chart · team switch -> Kansas City. All 0 errors.

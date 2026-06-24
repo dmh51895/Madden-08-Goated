@@ -1,0 +1,2 @@
+banner.png  (~990 x 167) -> served at /banner.png.
+Absent => header falls back to the PCFTBALL wordmark.
