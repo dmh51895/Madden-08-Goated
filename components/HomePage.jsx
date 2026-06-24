@@ -246,100 +246,49 @@ export default function HomePage({
         </div>
       </div>
 
-      {/* GOTW + POWER RANKINGS */}
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)", gap: 12, marginBottom: 16 }}>
+      {/* GOTW + PLAYOFF BRACKET */}
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 2fr)", gap: 12, marginBottom: 16 }}>
+        {/* Compact GOTW */}
         <div style={{ background: "#0c0c0c", borderRadius: 8, border: "1px solid #1a1a1a", overflow: "hidden" }}>
-          <div style={{ background: "#3b6db522", borderBottom: "1px solid #3b6db533", padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ fontSize: 10, fontWeight: "bold", color: "#3b6db5", letterSpacing: 1 }}>🎮 GAME OF THE WEEK</div>
-            <label style={{ fontSize: 7, padding: "3px 8px", borderRadius: 4, background: "rgba(0,0,0,0.5)", border: "1px solid #333", color: "#aaa", cursor: "pointer", fontFamily: "inherit" }}>
+          <div style={{ background: "#3b6db522", borderBottom: "1px solid #3b6db533", padding: "6px 10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontSize: 9, fontWeight: "bold", color: "#3b6db5", letterSpacing: 1 }}>🎮 GOTW</div>
+            <label style={{ fontSize: 7, padding: "2px 6px", borderRadius: 4, background: "rgba(0,0,0,0.5)", border: "1px solid #333", color: "#aaa", cursor: "pointer", fontFamily: "inherit" }}>
               📷
               <input type="file" accept="image/*" onChange={onGOTWImageUpload} style={{ display: "none" }} />
             </label>
           </div>
           {gotwImage && (
-            <img src={gotwImage} alt="" style={{ width: "100%", height: 160, objectFit: "cover", display: "block" }} />
+            <img src={gotwImage} alt="" style={{ width: "100%", height: 80, objectFit: "cover", display: "block" }} />
           )}
           {gotw ? (
-            <div style={{ padding: 16 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "stretch", gap: 12 }}>
+            <div style={{ padding: 10 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", gap: 6 }}>
                 {[
-                  { side: "away", abbr: gotw.away, score: gotw.awayScore, label: "AWAY", winner: gotw.awayScore > gotw.homeScore },
+                  { side: "away", abbr: gotw.away, score: gotw.awayScore, winner: gotw.awayScore > gotw.homeScore },
                   null,
-                  { side: "home", abbr: gotw.home, score: gotw.homeScore, label: "HOME", winner: gotw.homeScore > gotw.awayScore },
+                  { side: "home", abbr: gotw.home, score: gotw.homeScore, winner: gotw.homeScore > gotw.awayScore },
                 ].map((t, i) => {
-                  if (!t) return (
-                    <div key="vs" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#444", letterSpacing: 2 }}>FINAL</div>
-                  );
-                  const c = teamColor(t.abbr);
+                  if (!t) return <div key="vs" style={{ fontSize: 7, color: "#444", letterSpacing: 1 }}>FINAL</div>;
                   return (
-                    <div
-                      key={t.side}
-                      onClick={() => navigateToTeam?.(t.abbr)}
-                      style={{
-                        background: c.bg, color: c.fg,
-                        borderRadius: 6, padding: "12px 8px", textAlign: "center", cursor: "pointer",
-                        border: t.winner ? "2px solid #22c55e" : "2px solid transparent",
-                        boxShadow: t.winner ? "0 0 12px rgba(34,197,94,0.25)" : "none",
-                      }}
-                    >
-                      <div style={{ fontSize: 7, opacity: 0.7, letterSpacing: 2, marginBottom: 2 }}>{t.label}</div>
-                      <div style={{ fontSize: 20, fontWeight: "bold" }}>{t.abbr}</div>
-                      <div style={{ fontSize: 32, fontWeight: "bold", marginTop: 4 }}>{t.score}</div>
+                    <div key={t.side} onClick={() => navigateToTeam?.(t.abbr)} style={{ textAlign: "center", cursor: "pointer" }}>
+                      <img src={`/logos/${t.abbr}.png`} alt="" style={{ width: 28, height: 28, objectFit: "contain" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                      <div style={{ fontSize: 9, fontWeight: "bold", color: t.winner ? "#22c55e" : "#888" }}>{t.abbr}</div>
+                      <div style={{ fontSize: 16, fontWeight: "bold", color: t.winner ? "#fff" : "#666" }}>{t.score}</div>
                     </div>
                   );
                 })}
               </div>
-              <div style={{ fontSize: 8, color: "#666", textAlign: "center", marginTop: 10, letterSpacing: 1 }}>
-                WEEK {gotw.week}
-              </div>
+              <div style={{ fontSize: 7, color: "#555", textAlign: "center", marginTop: 6 }}>WEEK {gotw.week}</div>
             </div>
           ) : (
-            <div style={{ padding: 40, textAlign: "center", color: "#666", fontSize: 10 }}>
-              No games played yet — upload a game log in Schedules
+            <div style={{ padding: 20, textAlign: "center", color: "#555", fontSize: 8 }}>
+              No games yet
             </div>
           )}
         </div>
 
-        <div style={{ background: "#0c0c0c", borderRadius: 8, border: "1px solid #1a1a1a", overflow: "hidden" }}>
-          <div style={{ background: "#d4a01722", borderBottom: "1px solid #d4a01733", padding: "8px 12px" }}>
-            <div style={{ fontSize: 10, fontWeight: "bold", color: "#d4a017", letterSpacing: 1 }}>⚡ POWER RANKINGS</div>
-          </div>
-          {powerTop.length === 0 ? (
-            <div style={{ padding: 30, fontSize: 10, color: "#666", textAlign: "center" }}>No standings data yet</div>
-          ) : powerTop.slice(0, 8).map((t, i) => {
-            const c = teamColor(t.abbr);
-            return (
-            <div
-              key={t.abbr}
-              onClick={() => navigateToTeam?.(t.abbr)}
-              style={{
-                display: "flex", alignItems: "center", gap: 8, padding: "5px 12px 5px 10px",
-                borderBottom: i < Math.min(powerTop.length - 1, 7) ? "1px solid #161616" : "none",
-                cursor: "pointer", background: i % 2 ? "#0a0a0a" : "transparent",
-                borderLeft: `3px solid ${c.bg}`,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#1a1614")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 ? "#0a0a0a" : "transparent")}
-            >
-              <span style={{ fontSize: 10, fontWeight: "bold", color: i === 0 ? "#d4a017" : i === 1 ? "#c0c0c0" : i === 2 ? "#cd7f32" : "#666", minWidth: 16 }}>
-                #{i + 1}
-              </span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 10, fontWeight: "bold", color: teamAccent(t.abbr) }}>{t.abbr}</div>
-                <div style={{ fontSize: 7, color: "#666", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.city}</div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 10, color: "#15803d", fontWeight: "bold" }}>
-                  {t.w}-{t.l}{t.t ? `-${t.t}` : ""}
-                </div>
-                <div style={{ fontSize: 7, color: (t.diff || 0) > 0 ? "#22c55e" : (t.diff || 0) < 0 ? "#dc2626" : "#666" }}>
-                  {(t.diff || 0) > 0 ? "+" : ""}{t.diff || 0}
-                </div>
-              </div>
-            </div>
-            );
-          })}
-        </div>
+        {/* Playoff Bracket */}
+        <PlayoffBracket standings={standings} teams={teams} navigateToTeam={navigateToTeam} year={year} />
       </div>
 
       {/* STAT LEADERS GRID */}
@@ -360,43 +309,152 @@ export default function HomePage({
         <LeaderCard title="SACKS LEADER"     color="#dc2626" items={leaders.sacks}         statKey={haveRealStats ? "sacks"      : "strength"}     statLabel={haveRealStats ? "SACK" : "STR"} />
       </div>
 
-      {/* STANDINGS STRIP */}
-      <div style={{ background: "#0c0c0c", borderRadius: 8, border: "1px solid #1a1a1a", overflow: "hidden" }}>
-        <div style={{ background: "#15803d22", borderBottom: "1px solid #15803d33", padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: 10, fontWeight: "bold", color: "#15803d", letterSpacing: 1 }}>📊 {year || ""} STANDINGS</div>
-          <button
-            onClick={() => setPanel?.("standings")}
-            style={{ fontSize: 8, padding: "3px 8px", borderRadius: 4, border: "1px solid #15803d", background: "transparent", color: "#15803d", cursor: "pointer", fontFamily: "inherit", letterSpacing: 1 }}
-          >
-            FULL STANDINGS →
-          </button>
+    </div>
+  );
+}
+
+function PlayoffBracket({ standings, teams, navigateToTeam, year }) {
+  if (!standings.length || !teams?.length) return null;
+
+  const sorted = [...standings]
+    .sort((a, b) => (b.w - a.w) || ((b.diff || 0) - (a.diff || 0)));
+
+  const seedList = sorted.map((t, i) => ({ ...t, seed: i + 1 }));
+
+  let numTeams;
+  if (seedList.length <= 8) numTeams = 8;
+  else if (seedList.length <= 10) numTeams = 10;
+  else if (seedList.length <= 11) numTeams = 11;
+  else numTeams = 12;
+
+  const bracketSeeds = seedList.slice(0, numTeams);
+
+  function getTeamByAbbr(abbr) {
+    return teams?.find((t) => (t.abbr || "").toUpperCase() === abbr.toUpperCase()) || null;
+  }
+
+  function getRecord(abbr) {
+    const s = standings?.find((x) => x.abbr === abbr);
+    return s ? `${s.w}-${s.l}` : "";
+  }
+
+  let wcRounds, byes;
+  if (numTeams === 8) {
+    byes = 0;
+    wcRounds = [
+      [bracketSeeds[0], bracketSeeds[7]],
+      [bracketSeeds[3], bracketSeeds[4]],
+      [bracketSeeds[1], bracketSeeds[6]],
+      [bracketSeeds[2], bracketSeeds[5]],
+    ];
+  } else if (numTeams === 10) {
+    byes = 2;
+    wcRounds = [
+      [bracketSeeds[2], bracketSeeds[9]],
+      [bracketSeeds[3], bracketSeeds[8]],
+      [bracketSeeds[4], bracketSeeds[7]],
+      [bracketSeeds[5], bracketSeeds[6]],
+    ];
+  } else if (numTeams === 11) {
+    byes = 3;
+    wcRounds = [
+      [bracketSeeds[3], bracketSeeds[10]],
+      [bracketSeeds[4], bracketSeeds[9]],
+      [bracketSeeds[5], bracketSeeds[8]],
+    ];
+  } else {
+    byes = 4;
+    wcRounds = [
+      [bracketSeeds[4], bracketSeeds[11]],
+      [bracketSeeds[5], bracketSeeds[10]],
+      [bracketSeeds[6], bracketSeeds[9]],
+      [bracketSeeds[7], bracketSeeds[8]],
+    ];
+  }
+
+  function MatchupSlot({ match, roundIdx }) {
+    if (!match) return null;
+    const [home, away] = match;
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 110 }}>
+        <BracketTeam seed={home.seed} abbr={home.abbr} record={getRecord(home.abbr)} teamData={getTeamByAbbr(home.abbr)} navigateToTeam={navigateToTeam} />
+        <BracketTeam seed={away.seed} abbr={away.abbr} record={getRecord(away.abbr)} teamData={getTeamByAbbr(away.abbr)} navigateToTeam={navigateToTeam} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: "#0c0c0c", borderRadius: 8, border: "1px solid #1a1a1a", overflow: "hidden" }}>
+      <div style={{ background: "#15803d22", borderBottom: "1px solid #15803d33", padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: 10, fontWeight: "bold", color: "#15803d", letterSpacing: 1 }}>
+          🏈 {year || ""} PLAYOFF BRACKET ({numTeams} TEAMS)
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 0 }}>
-          {[...standings]
-            .sort((a, b) => (b.w - a.w) || ((b.diff || 0) - (a.diff || 0)))
-            .slice(0, 12)
-            .map((t, i) => {
-              const c = teamColor(t.abbr);
-              return (
-              <div
-                key={t.abbr}
-                onClick={() => navigateToTeam?.(t.abbr)}
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 10px 6px 8px", borderRight: "1px solid #161616", borderBottom: "1px solid #161616", borderLeft: `3px solid ${c.bg}`, cursor: "pointer" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#1a1614")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-              >
-                <span style={{ fontSize: 9, fontWeight: "bold", color: teamAccent(t.abbr) }}>
-                  <span style={{ color: "#666", marginRight: 6, fontWeight: "normal" }}>#{i + 1}</span>
-                  {t.abbr}
-                </span>
-                <span style={{ fontSize: 9, color: "#15803d", fontWeight: "bold" }}>
-                  {t.w}-{t.l}{t.t ? `-${t.t}` : ""}
-                </span>
+        <button
+          onClick={() => { }}
+          style={{ fontSize: 8, padding: "3px 8px", borderRadius: 4, border: "1px solid #15803d", background: "transparent", color: "#15803d", cursor: "pointer", fontFamily: "inherit", letterSpacing: 1, opacity: 0.6 }}
+        >
+          FULL BRACKET →
+        </button>
+      </div>
+      <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+        {byes > 0 && (
+          <div style={{ fontSize: 8, color: "#666", letterSpacing: 1 }}>
+            {byes} TEAM{byes > 1 ? "S" : ""} WITH BYE: {bracketSeeds.slice(0, byes).map((t) => t.abbr).join(", ")}
+          </div>
+        )}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+          {wcRounds.map((match, i) => (
+            <div key={i} style={{ background: "#0a0a0a", borderRadius: 6, border: "1px solid #1a1a1a", padding: 8 }}>
+              <div style={{ fontSize: 7, color: "#444", letterSpacing: 1, marginBottom: 6 }}>
+                {numTeams === 8 ? "WILD CARD" : numTeams === 10 ? "WILD CARD" : numTeams === 11 ? "WILD CARD" : "WILD CARD"}
               </div>
-              );
-            })}
+              <MatchupSlot match={match} roundIdx={0} />
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 8, color: "#666", textAlign: "center", letterSpacing: 1, marginTop: 4 }}>
+          ↑ WILD CARD → DIVISIONAL → SUPER BOWL ↑
         </div>
       </div>
     </div>
   );
 }
+
+function BracketTeam({ seed, abbr, record, teamData, navigateToTeam }) {
+  const colors = [
+    { bg: "#d4a017", fg: "#000" },
+    { bg: "#c0c0c0", fg: "#000" },
+    { bg: "#cd7f32", fg: "#000" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+    { bg: "#15803d", fg: "#fff" },
+  ];
+  const seedColor = colors[Math.min(seed - 1, colors.length - 1)];
+  const teamColors = teamData?.primary ? { bg: `#${teamData.primary}`, fg: "#fff" } : seedColor;
+
+  return (
+    <div
+      onClick={() => abbr && navigateToTeam?.(abbr)}
+      style={{
+        display: "flex", alignItems: "center", gap: 6,
+        padding: "4px 6px", borderRadius: 4,
+        background: teamColors.bg,
+        color: teamColors.fg,
+        cursor: abbr ? "pointer" : "default",
+        fontSize: 9,
+        opacity: abbr ? 1 : 0.4,
+      }}
+    >
+      <span style={{ fontSize: 8, fontWeight: "bold", opacity: 0.7 }}>#{seed}</span>
+      <span style={{ fontWeight: "bold" }}>{abbr}</span>
+      <span style={{ fontSize: 8, marginLeft: "auto", opacity: 0.8 }}>{record}</span>
+    </div>
+  );
+}
+

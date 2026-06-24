@@ -456,7 +456,10 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
     setSelectedTeam(teamAbbr);
     setTeamFilter(teamAbbr);
     setPanel("teams");
-  }, []);
+    if (typeof window !== "undefined") {
+      router.push(`/roster/${teamAbbr}/${currentSeason}/`, { scroll: false });
+    }
+  }, [router, currentSeason]);
 
   const panels = [
     { id: "home", label: "🏠 HOME", color: "#c41e1e" },

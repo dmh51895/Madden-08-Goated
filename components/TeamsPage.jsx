@@ -13,6 +13,14 @@ export default function TeamsPage({
   const [teamFilter, setTeamFilter] = useState(selectedTeam || teams[0]?.abbr || "CHI");
   const [view, setView] = useState("home"); // "home" | "roster"
 
+  // Sync teamFilter when selectedTeam changes from outside (e.g. logo click)
+  React.useEffect(() => {
+    if (selectedTeam && selectedTeam !== teamFilter) {
+      setTeamFilter(selectedTeam);
+      setView("home");
+    }
+  }, [selectedTeam]);
+
   const teamInfo = teams.find((t) => t.abbr === teamFilter);
   const teamStanding = standings.find((t) => t.abbr === teamFilter);
   const tc = teamColor(teamFilter);
