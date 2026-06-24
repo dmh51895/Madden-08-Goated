@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002F[panel]","\u002Fplayer\u002F[id]","\u002Froster\u002F[team]\u002F[year]","\u002Fschedule\u002F[team]\u002F[year]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()

@@ -1,0 +1,58 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-5d0c434f4506d830.js",
+      "static/chunks/117-885da3afc9dd5396.js",
+      "static/chunks/main-app-9a8c18da608814dc.js",
+      "static/chunks/app/_not-found/page-5c13080123d91220.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-5d0c434f4506d830.js",
+      "static/chunks/117-885da3afc9dd5396.js",
+      "static/chunks/main-app-9a8c18da608814dc.js",
+      "static/chunks/app/layout-cbd3ebdc4ecc5247.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-5d0c434f4506d830.js",
+      "static/chunks/117-885da3afc9dd5396.js",
+      "static/chunks/main-app-9a8c18da608814dc.js",
+      "static/chunks/603-f052b760de6a8bfc.js",
+      "static/chunks/app/page-40576999a5f79e54.js"
+    ],
+    "/player/[id]/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-5d0c434f4506d830.js",
+      "static/chunks/117-885da3afc9dd5396.js",
+      "static/chunks/main-app-9a8c18da608814dc.js",
+      "static/chunks/603-f052b760de6a8bfc.js",
+      "static/chunks/app/player/[id]/page-494e3f2464728ae0.js"
+    ],
+    "/schedule/[team]/[year]/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-5d0c434f4506d830.js",
+      "static/chunks/117-885da3afc9dd5396.js",
+      "static/chunks/main-app-9a8c18da608814dc.js",
+      "static/chunks/603-f052b760de6a8bfc.js",
+      "static/chunks/app/schedule/[team]/[year]/page-22ed8fc1b666ce2d.js"
+    ],
+    "/[panel]/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-5d0c434f4506d830.js",
+      "static/chunks/117-885da3afc9dd5396.js",
+      "static/chunks/main-app-9a8c18da608814dc.js",
+      "static/chunks/603-f052b760de6a8bfc.js",
+      "static/chunks/app/[panel]/page-10c5f3eaee57a6ee.js"
+    ],
+    "/roster/[team]/[year]/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-5d0c434f4506d830.js",
+      "static/chunks/117-885da3afc9dd5396.js",
+      "static/chunks/main-app-9a8c18da608814dc.js",
+      "static/chunks/603-f052b760de6a8bfc.js",
+      "static/chunks/app/roster/[team]/[year]/page-7de07f6471e6a095.js"
+    ]
+  }
+}

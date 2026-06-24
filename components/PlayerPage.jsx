@@ -139,19 +139,6 @@ export default function PlayerPage({
   const goAllPlayers = () => navigateToPlayer?.(null);
   const goBack = () => { if (typeof window !== "undefined") window.history.back(); };
 
-  // ── Early returns (safe — all hooks have already run above) ─────
-
-  if (!roster.length) {
-    return (
-      <div style={{ color: "#666", fontSize: 10 }}>
-        No roster data. Upload a roster CSV in Settings.
-      </div>
-    );
-  }
-
-  const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-  const POSITIONS = ["QB","HB","FB","WR","TE","LT","LG","C","RG","RT","LE","RE","DT","LOLB","MLB","ROLB","CB","FS","SS","K","P"];
-
   // Pre-compute which letters/positions actually have players (for greying out
   // empty buttons — UX polish so users don't tap dead ones).
   const availableLetters = useMemo(() => {
@@ -168,6 +155,19 @@ export default function PlayerPage({
     for (const p of roster) if (p.positionAbbr) s.add(p.positionAbbr);
     return s;
   }, [roster]);
+
+  // ── Early returns (safe — all hooks have already run above) ─────
+
+  if (!roster.length) {
+    return (
+      <div style={{ color: "#666", fontSize: 10 }}>
+        No roster data. Upload a roster CSV in Settings.
+      </div>
+    );
+  }
+
+  const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const POSITIONS = ["QB","HB","FB","WR","TE","LT","LG","C","RG","RT","LE","RE","DT","LOLB","MLB","ROLB","CB","FS","SS","K","P"];
 
   const FilterBar = (
     <div style={{ marginBottom: 12 }}>
