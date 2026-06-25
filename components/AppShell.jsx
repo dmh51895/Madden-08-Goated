@@ -647,7 +647,9 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
 
         {/* Team logo strip + banner (legacy PCFT header). Assets are optional —
             each image hides itself on 404, with a text fallback for the banner. */}
-        <LeagueHeader navigateToTeam={wrappedNavigateToTeam} leagueName={settings.leagueName || "PCFTBALL"} />
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LeagueHeader navigateToTeam={wrappedNavigateToTeam} leagueName={settings.leagueName || "PCFTBALL"} />
+        </div>
 
         {/* Grouped nav (mirrors original PCFT dropdown structure) */}
         <NavBar
@@ -659,7 +661,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
       </div>
 
       {/* ── Panel Content ─────────────────────────────────── */}
-      <div style={{ padding: "12px 16px", maxWidth: 1400, margin: "0 auto" }}>
+      <div style={{ padding: "12px 16px", maxWidth: 1200, margin: "0 auto" }}>
         {renderPanel()}
       </div>
 
