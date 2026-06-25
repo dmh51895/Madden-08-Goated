@@ -809,7 +809,6 @@ const NAV_GROUPS = [
       { panelId: "records",     label: "Records" },
       { panelId: "playoffs",    label: "Playoffs" },
       { panelId: "breakdown",   label: "League Breakdown" },
-      { panelId: "setup",       label: "Season Setup" },
     ],
   },
   {
@@ -839,6 +838,7 @@ const ADMIN_GROUP = {
     { panelId: "duplicates", label: "Duplicates", withCount: true },
     { panelId: "coaches",    label: "Coaches" },
     { panelId: "settings",   label: "Settings" },
+    { panelId: "setup",      label: "Season Setup" },
   ],
 };
 
