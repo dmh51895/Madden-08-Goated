@@ -627,6 +627,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
             onGenerateSchedule={handleGenerateSchedule}
             currentSeason={currentSeason}
             canEdit={!currentUser || currentUser.role === 0}
+            setPanel={setPanel}
           />
         );
       case "settings":

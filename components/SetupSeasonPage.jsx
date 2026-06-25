@@ -14,6 +14,7 @@ export default function SetupSeasonPage({
   onGenerateSchedule,
   currentSeason,
   canEdit,
+  setPanel,
 }) {
   const [buildWeek, setBuildWeek] = useState(1);
   const [awayTeam, setAwayTeam] = useState("");
@@ -24,6 +25,13 @@ export default function SetupSeasonPage({
   const tournamentTeams = settings?.tournamentTeams || 12;
   const playoffsEnabled = settings?.playoffsEnabled || false;
   const gamesPerSeason = settings?.gamesPerSeason || 16;
+
+  const hasGames = (schedule || []).length > 0;
+  const hasPlayoffGames = useMemo(() => {
+    const pg = settings?.playoffGames || {};
+    return Object.values(pg).some((arr) => (arr || []).length > 0);
+  }, [settings?.playoffGames]);
+  const isLocked = hasGames || hasPlayoffGames;
 
   const scheduleByWeek = useMemo(() => {
     const byWeek = {};
@@ -52,12 +60,29 @@ export default function SetupSeasonPage({
     }
   };
 
+  const handleSeasonTypeChange = (newType) => {
+    if (!canEdit || isLocked) return;
+    onUpdateSettings({ seasonType: newType });
+  };
+
+  const handleTournamentFormatChange = (n) => {
+    if (!canEdit) return;
+    onUpdateSettings({ tournamentTeams: n });
+    if (setPanel) setPanel("schedules");
+  };
+
   return (
     <div>
       <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "center" }}>
         <span style={{ fontSize: 12, fontWeight: "bold", color: "#15803d" }}>⚙️ SEASON SETUP</span>
         <span style={{ fontSize: 8, color: "#666" }}>· {currentSeason}</span>
       </div>
+
+      {isLocked && (
+        <div style={{ marginBottom: 12, padding: "8px 12px", borderRadius: 6, border: "1px solid #b45309", background: "#b4530915", fontSize: 9, color: "#f59e0b" }}>
+          🔒 Season type and tournament format are locked — {hasGames ? `${(schedule || []).length} game(s) exist` : 'playoff games are entered'}. Clear all games to change.
+        </div>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
 
@@ -74,13 +99,14 @@ export default function SetupSeasonPage({
               ].map((t) => (
                 <button
                   key={t.id}
-                  onClick={() => canEdit && onUpdateSettings({ seasonType: t.id })}
+                  onClick={() => handleSeasonTypeChange(t.id)}
                   style={{
                     flex: 1, padding: "10px 12px", borderRadius: 6, fontFamily: "inherit", fontSize: 10, fontWeight: "bold",
                     border: seasonType === t.id ? "2px solid #15803d" : BORDER,
                     background: seasonType === t.id ? "#15803d15" : "transparent",
-                    color: seasonType === t.id ? "#15803d" : "#888",
-                    cursor: canEdit ? "pointer" : "default",
+                    color: seasonType === t.id ? "#15803d" : isLocked ? "#555" : "#888",
+                    cursor: canEdit && !isLocked ? "pointer" : "default",
+                    opacity: isLocked && seasonType !== t.id ? 0.4 : 1,
                   }}
                 >
                   {t.icon} {t.label}
@@ -136,17 +162,19 @@ export default function SetupSeasonPage({
           {seasonType === "tournament" && (
             <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: BORDER }}>
               <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>TOURNAMENT FORMAT</div>
+              <div style={{ fontSize: 8, color: "#666", marginBottom: 8 }}>Pick a format to go enter your bracket matchups on the Schedule page.</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
                 {[8, 10, 12].map((n) => (
                   <button
                     key={n}
-                    onClick={() => canEdit && onUpdateSettings({ tournamentTeams: n })}
+                    onClick={() => handleTournamentFormatChange(n)}
                     style={{
                       padding: "10px 8px", borderRadius: 6, fontFamily: "inherit", fontSize: 11, fontWeight: "bold",
                       border: tournamentTeams === n ? "2px solid #15803d" : BORDER,
                       background: tournamentTeams === n ? "#15803d15" : "transparent",
-                      color: tournamentTeams === n ? "#15803d" : "#888",
-                      cursor: canEdit ? "pointer" : "default",
+                      color: tournamentTeams === n ? "#15803d" : isLocked ? "#555" : "#888",
+                      cursor: canEdit && !isLocked ? "pointer" : "default",
+                      opacity: isLocked && tournamentTeams !== n ? 0.4 : 1,
                     }}
                   >
                     {n} Teams
@@ -169,6 +197,12 @@ export default function SetupSeasonPage({
                 Bracket auto-generates on the Home page based on standings seeding.
                 Byes: 8=0, 10=2, 12=4.
               </div>
+              <button
+                onClick={() => setPanel && setPanel("schedules")}
+                style={{ width: "100%", marginTop: 10, padding: "8px 12px", borderRadius: 6, border: "1px solid #15803d", background: "#15803d15", color: "#15803d", fontSize: 9, fontWeight: "bold", fontFamily: "inherit", cursor: "pointer" }}
+              >
+                ➜ ENTER TOURNAMENT GAMES ON SCHEDULE PAGE
+              </button>
             </div>
           )}
 
@@ -179,13 +213,23 @@ export default function SetupSeasonPage({
         {/* ── RIGHT: Schedule Builder ── */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: BORDER }}>
-            <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>SCHEDULE BUILDER</div>
+            <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>
+              {seasonType === "tournament" ? "TOURNAMENT BRACKET BUILDER" : "SCHEDULE BUILDER"}
+            </div>
+
+            {seasonType === "tournament" && (
+              <div style={{ fontSize: 8, color: "#666", marginBottom: 8 }}>
+                Use week numbers as rounds — Week 1 = Round 1, Week 2 = Round 2, etc. Enter matchups below or go to the full Schedule page.
+              </div>
+            )}
 
             {/* Week stepper */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
               <button onClick={() => setBuildWeek(Math.max(1, buildWeek - 1))} style={navBtn}>◀</button>
               <div style={{ flex: 1, textAlign: "center" }}>
-                <div style={{ fontSize: 12, fontWeight: "bold", color: "#15803d" }}>WEEK {buildWeek}</div>
+                <div style={{ fontSize: 12, fontWeight: "bold", color: "#15803d" }}>
+                  {seasonType === "tournament" ? `ROUND ${buildWeek}` : `WEEK ${buildWeek}`}
+                </div>
                 <div style={{ fontSize: 7, color: "#555" }}>
                   {scheduleByWeek[buildWeek]?.length || 0} games
                 </div>
@@ -209,18 +253,20 @@ export default function SetupSeasonPage({
               </div>
             )}
 
-            {/* Auto-generate */}
-            {canEdit && (
+            {/* Auto-generate (regular season only) */}
+            {canEdit && seasonType === "season" && (
               <button onClick={onGenerateSchedule} style={{ width: "100%", fontSize: 8, padding: "6px 10px", borderRadius: 4, border: "1px dashed #333", background: "transparent", color: "#888", cursor: "pointer", fontFamily: "inherit", marginBottom: 10 }}>
                 ⚡ AUTO-GENERATE ROUND ROBIN
               </button>
             )}
 
-            {/* Week games list */}
-            <div style={{ fontSize: 8, color: "#666", marginBottom: 4 }}>WEEK {buildWeek} GAMES</div>
+            {/* Games list */}
+            <div style={{ fontSize: 8, color: "#666", marginBottom: 4 }}>
+              {seasonType === "tournament" ? `ROUND ${buildWeek} MATCHUPS` : `WEEK ${buildWeek} GAMES`}
+            </div>
             {(scheduleByWeek[buildWeek] || []).length === 0 ? (
               <div style={{ padding: 16, textAlign: "center", fontSize: 9, color: "#555" }}>
-                No games in week {buildWeek}
+                No {seasonType === "tournament" ? "matchups" : "games"} in {seasonType === "tournament" ? "round" : "week"} {buildWeek}
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -242,7 +288,9 @@ export default function SetupSeasonPage({
 
           {/* Schedule summary */}
           <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: BORDER }}>
-            <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>SCHEDULE SUMMARY</div>
+            <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>
+              {seasonType === "tournament" ? "TOURNAMENT SUMMARY" : "SCHEDULE SUMMARY"}
+            </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <div style={{ textAlign: "center", padding: 8, background: "#0a0a0a", borderRadius: 4 }}>
                 <div style={{ fontSize: 18, fontWeight: "bold", color: "#15803d" }}>{(schedule || []).length}</div>
@@ -250,7 +298,7 @@ export default function SetupSeasonPage({
               </div>
               <div style={{ textAlign: "center", padding: 8, background: "#0a0a0a", borderRadius: 4 }}>
                 <div style={{ fontSize: 18, fontWeight: "bold", color: "#3b6db5" }}>{usedWeeks}</div>
-                <div style={{ fontSize: 7, color: "#666" }}>WEEKS BUILT</div>
+                <div style={{ fontSize: 7, color: "#666" }}>{seasonType === "tournament" ? "ROUNDS" : "WEEKS BUILT"}</div>
               </div>
             </div>
           </div>
@@ -260,19 +308,23 @@ export default function SetupSeasonPage({
             onClick={() => setShowSchedule(!showSchedule)}
             style={{ width: "100%", fontSize: 8, padding: "6px 10px", borderRadius: 4, border: INNER_BORDER, background: "#0a0a0a", color: "#888", cursor: "pointer", fontFamily: "inherit" }}
           >
-            {showSchedule ? "HIDE" : "SHOW"} FULL SCHEDULE ({(schedule || []).length} games)
+            {showSchedule ? "HIDE" : "SHOW"} FULL {seasonType === "tournament" ? "BRACKET" : "SCHEDULE"} ({(schedule || []).length} games)
           </button>
 
           {showSchedule && (
             <div style={{ background: "#0c0c0c", borderRadius: 8, border: BORDER, overflow: "hidden" }}>
               {Object.keys(scheduleByWeek).sort((a, b) => Number(a) - Number(b)).map((w) => (
                 <div key={w} style={{ borderBottom: INNER_BORDER }}>
-                  <div style={{ fontSize: 8, fontWeight: "bold", color: "#666", padding: "4px 10px", background: "#0a0a0a" }}>WEEK {w}</div>
+                  <div style={{ fontSize: 8, fontWeight: "bold", color: "#666", padding: "4px 10px", background: "#0a0a0a" }}>
+                    {seasonType === "tournament" ? `ROUND ${w}` : `WEEK ${w}`}
+                  </div>
                   {scheduleByWeek[w].map((g, i) => (
                     <div key={g.id || i} style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 10px", fontSize: 9 }}>
+                      <img src={`/logos/${g.away}.png`} alt="" style={{ width: 14, height: 14, objectFit: "contain" }} onError={(e) => { e.target.style.display = "none"; }} />
                       <span style={{ color: "#e0e0e0" }}>{g.away}</span>
                       <span style={{ color: "#444" }}>@</span>
                       <span style={{ color: "#e0e0e0" }}>{g.home}</span>
+                      <img src={`/logos/${g.home}.png`} alt="" style={{ width: 14, height: 14, objectFit: "contain" }} onError={(e) => { e.target.style.display = "none"; }} />
                       {g.awayScore != null && <span style={{ color: "#666", marginLeft: "auto" }}>{g.awayScore}-{g.homeScore}</span>}
                     </div>
                   ))}
