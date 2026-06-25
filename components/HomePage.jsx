@@ -11,41 +11,53 @@ const INNER_BORDER = "1px solid #1e1e1e";
 
 function StatTable({ title, color, items, statKey, statLabel, onPlayerClick, nameFn, teamFn, posFn }) {
   return (
-    <div style={{ background: "#0c0c0c", borderRadius: 6, overflow: "hidden", border: BORDER }}>
-      <div style={{ background: `${color}1a`, borderBottom: `1px solid ${color}33`, padding: "6px 10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div style={{ background: "#0c0c0c", borderRadius: 6, overflow: "hidden", border: BORDER, borderLeft: `3px solid ${color}` }}>
+      {/* Header */}
+      <div style={{ background: "#111", padding: "5px 10px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e1e1e" }}>
         <div style={{ fontSize: 9, fontWeight: "bold", color, letterSpacing: 1 }}>{title}</div>
-        <div style={{ fontSize: 7, color: "#666", letterSpacing: 1 }}>{statLabel}</div>
       </div>
+      {/* Column labels */}
+      <div style={{ display: "grid", gridTemplateColumns: "22px 1fr 42px", padding: "3px 10px", borderBottom: "1px solid #1e1e1e", background: "#0a0a0a" }}>
+        <div style={{ fontSize: 7, color: "#555", letterSpacing: 1 }}></div>
+        <div style={{ fontSize: 7, color: "#555", letterSpacing: 1 }}>PLAYER</div>
+        <div style={{ fontSize: 7, color: "#555", letterSpacing: 1, textAlign: "right" }}>{statLabel}</div>
+      </div>
+      {/* Rows */}
       {items.length === 0 ? (
-        <div style={{ padding: "12px 8px", fontSize: 8, color: "#666", textAlign: "center" }}>No data</div>
+        <div style={{ padding: "12px 8px", fontSize: 8, color: "#555", textAlign: "center" }}>No data</div>
       ) : (
         <div>
-          {items.map((p, i) => (
-            <div
-              key={i}
-              onClick={() => onPlayerClick?.(p)}
-              style={{
-                display: "grid", gridTemplateColumns: "18px 1fr 48px", alignItems: "center",
-                padding: "5px 10px", borderBottom: i < items.length - 1 ? INNER_BORDER : "none",
-                cursor: "pointer", background: i % 2 ? ROW_ODD : ROW_EVEN,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = ROW_HOVER)}
-              onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 ? ROW_ODD : ROW_EVEN)}
-            >
-              <span style={{ fontSize: 9, fontWeight: "bold", color: i === 0 ? "#d4a017" : i === 1 ? "#c0c0c0" : i === 2 ? "#cd7f32" : "#666" }}>
-                {i + 1}
-              </span>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 9, fontWeight: "bold", color: "#e0e0e0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {nameFn(p)}
+          {items.map((p, i) => {
+            const teamAbbr = teamFn(p);
+            return (
+              <div
+                key={i}
+                onClick={() => onPlayerClick?.(p)}
+                style={{
+                  display: "grid", gridTemplateColumns: "22px 1fr 42px", alignItems: "center",
+                  padding: "4px 10px", borderBottom: i < items.length - 1 ? INNER_BORDER : "none",
+                  cursor: "pointer", background: i % 2 ? "#0e0e0e" : "transparent",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = ROW_HOVER)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 ? "#0e0e0e" : "transparent")}
+              >
+                <img
+                  src={`/logos/${teamAbbr}.png`}
+                  alt=""
+                  style={{ width: 16, height: 16, objectFit: "contain", borderRadius: 2 }}
+                  onError={(e) => { e.target.style.display = "none"; }}
+                />
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 9, fontWeight: "bold", color: "#e0e0e0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {nameFn(p)}
+                  </div>
                 </div>
-                <div style={{ fontSize: 7, color: "#666" }}>{teamFn(p)} · {posFn(p)}</div>
+                <span style={{ fontSize: 10, color, fontWeight: "bold", textAlign: "right" }}>
+                  {(p[statKey] || 0).toLocaleString()}
+                </span>
               </div>
-              <span style={{ fontSize: 10, color, fontWeight: "bold", textAlign: "right" }}>
-                {(p[statKey] || 0).toLocaleString()}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
