@@ -37,7 +37,7 @@ export default function BreakdownPage({ roster, settings, onUpdateSettings, team
       </div>
 
       {/* Roster Count */}
-      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a", marginBottom: 12 }}>
+      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a", marginBottom: 12 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <span style={{ fontSize: 10, color: "#666" }}>ROSTER SIZE</span>
@@ -74,7 +74,7 @@ export default function BreakdownPage({ roster, settings, onUpdateSettings, team
       </div>
 
       {/* Breakdown Table */}
-      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
           <thead>
             <tr style={{ borderBottom: "1px solid #333", color: "#666" }}>
@@ -96,7 +96,7 @@ export default function BreakdownPage({ roster, settings, onUpdateSettings, team
                 <tr
                   key={row.group}
                   style={{
-                    borderBottom: "1px solid #1a1a1a",
+                    borderBottom: "1px solid #2a2a2a",
                     background: isToggleable ? "#0a0a0a" : isUnder ? "#1a0a0a" : isOver ? "#0a1a0a" : "transparent",
                     opacity: isToggleable ? 0.5 : 1,
                   }}

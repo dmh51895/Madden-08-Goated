@@ -32,7 +32,7 @@ export default function GamecenterPage({ gameResults = [], teams, standings, nav
                 background: "#0c0c0c",
                 borderRadius: 8,
                 padding: 12,
-                border: "1px solid #1a1a1a",
+                border: "1px solid #2a2a2a",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
@@ -68,7 +68,7 @@ export default function GamecenterPage({ gameResults = [], teams, standings, nav
               </div>
 
               {/* Game Stats */}
-              <div style={{ borderTop: "1px solid #1a1a1a", paddingTop: 8 }}>
+              <div style={{ borderTop: "1px solid #2a2a2a", paddingTop: 8 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, fontSize: 8 }}>
                   <div style={{ textAlign: "center" }}>
                     <div style={{ color: "#666" }}>Total Yards</div>

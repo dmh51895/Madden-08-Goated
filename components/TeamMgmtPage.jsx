@@ -168,7 +168,7 @@ export default function TeamMgmtPage({
             </thead>
             <tbody>
               {teamRoster.map((p) => (
-                <tr key={p.playerId} style={{ borderBottom: "1px solid #1a1a1a" }}>
+                <tr key={p.playerId} style={{ borderBottom: "1px solid #2a2a2a" }}>
                   <td style={{ padding: "4px 6px", color: "#666" }}>{p.jerseyNumber}</td>
                   <td style={{ padding: "4px 6px", fontWeight: "bold" }}>{p.firstName} {p.lastName}</td>
                   <td style={{ padding: "4px 6px", color: "#c77dff" }}>{p.positionAbbr}</td>
@@ -188,7 +188,7 @@ export default function TeamMgmtPage({
           <div style={{ fontSize: 9, color: "#666", marginBottom: 8 }}>Select a free agent to sign to {teamFilter}</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 8 }}>
             {freeAgents.slice(0, 50).map((p) => (
-              <div key={p.playerId} style={{ background: "#0c0c0c", borderRadius: 6, padding: 8, border: "1px solid #1a1a1a" }}>
+              <div key={p.playerId} style={{ background: "#0c0c0c", borderRadius: 6, padding: 8, border: "1px solid #2a2a2a" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
                     <div style={{ fontSize: 9, fontWeight: "bold" }}>{p.firstName} {p.lastName}</div>
@@ -221,7 +221,7 @@ export default function TeamMgmtPage({
             </thead>
             <tbody>
               {teamRoster.map((p) => (
-                <tr key={p.playerId} style={{ borderBottom: "1px solid #1a1a1a" }}>
+                <tr key={p.playerId} style={{ borderBottom: "1px solid #2a2a2a" }}>
                   <td style={{ padding: "4px 6px", fontWeight: "bold" }}>{p.firstName} {p.lastName}</td>
                   <td style={{ padding: "4px 6px", color: "#c77dff" }}>{p.positionAbbr}</td>
                   <td style={{ padding: "4px 6px", textAlign: "center" }}>{p.overall}</td>

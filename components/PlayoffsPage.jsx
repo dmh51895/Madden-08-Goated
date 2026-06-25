@@ -35,7 +35,7 @@ export default function PlayoffsPage({ standings, teams, navigateToTeam }) {
                 background: "#0c0c0c",
                 borderRadius: 6,
                 padding: 8,
-                border: "1px solid #1a1a1a",
+                border: "1px solid #2a2a2a",
               }}
             >
               <div style={{ fontSize: 7, color: "#666", marginBottom: 2, letterSpacing: 1 }}>
@@ -77,7 +77,7 @@ export default function PlayoffsPage({ standings, teams, navigateToTeam }) {
           {teams.map((t, i) => (
             <tr
               key={t.abbr}
-              style={{ borderBottom: "1px solid #1a1a1a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}
+              style={{ borderBottom: "1px solid #2a2a2a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}
             >
               <td style={{ padding: "4px 6px", textAlign: "center", color: i < 2 ? "#ffd700" : "#00d8a8", fontWeight: "bold" }}>
                 #{i + 1}

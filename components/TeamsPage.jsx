@@ -83,7 +83,7 @@ export default function TeamsPage({
   }, [allSeasons, teamFilter, teamStanding, year]);
 
   const Card = ({ title, color, children, right }) => (
-    <div style={{ background: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 8, marginBottom: 12, overflow: "hidden" }}>
+    <div style={{ background: "#0c0c0c", border: "1px solid #2a2a2a", borderRadius: 8, marginBottom: 12, overflow: "hidden" }}>
       <div style={{ background: `${color || accent}1a`, borderBottom: `1px solid ${color || accent}33`, padding: "7px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 10, fontWeight: "bold", letterSpacing: 1, color: color || accent }}>{title}</span>
         {right}
@@ -183,7 +183,7 @@ export default function TeamsPage({
                       <th style={th}>POS</th><th style={{ ...th, textAlign: "left" }}>PLAYER</th><th style={th}>AGE</th><th style={th}>OVR</th>
                     </tr></thead>
                     <tbody>{rookies.slice(0, 12).map((p) => (
-                      <tr key={p.playerId} onClick={() => navigateToPlayer(p.playerId)} style={{ cursor: "pointer", borderBottom: "1px solid #161616" }}>
+                      <tr key={p.playerId} onClick={() => navigateToPlayer(p.playerId)} style={{ cursor: "pointer", borderBottom: "1px solid #1e1e1e" }}>
                         <td style={td}>{p.positionAbbr}</td>
                         <td style={{ ...td, textAlign: "left", fontWeight: "bold", color: "#ddd" }}>{p.firstName} {p.lastName}</td>
                         <td style={td}>{p.age}</td>
@@ -208,7 +208,7 @@ export default function TeamsPage({
                   const res = g.played || g.completed
                     ? `${isHome ? g.homeScore : g.awayScore}-${isHome ? g.awayScore : g.homeScore}`
                     : (g.time || "—");
-                  return (<tr key={g.id || i} style={{ borderBottom: "1px solid #161616" }}>
+                  return (<tr key={g.id || i} style={{ borderBottom: "1px solid #1e1e1e" }}>
                     <td style={{ ...td, textAlign: "left", color: "#888" }}>{g.week}</td>
                     <td style={{ ...td, textAlign: "left" }}>{isHome ? "vs " : "at "}{opp}</td>
                     <td style={{ ...td, textAlign: "right", color: "#bbb" }}>{res}</td>
@@ -226,7 +226,7 @@ export default function TeamsPage({
                   <th style={{ ...th, textAlign: "left" }}>YEAR</th><th style={th}>W</th><th style={th}>L</th><th style={th}>T</th><th style={th}>PF</th><th style={th}>PA</th>
                 </tr></thead>
                 <tbody>{history.map((h) => (
-                  <tr key={h.year} style={{ borderBottom: "1px solid #161616", background: h.year === year ? `${tc.bg}22` : "transparent" }}>
+                  <tr key={h.year} style={{ borderBottom: "1px solid #1e1e1e", background: h.year === year ? `${tc.bg}22` : "transparent" }}>
                     <td style={{ ...td, textAlign: "left", fontWeight: "bold" }}>{h.year}</td>
                     <td style={td}>{h.w || 0}</td><td style={td}>{h.l || 0}</td><td style={td}>{h.t || 0}</td>
                     <td style={td}>{h.pf || 0}</td><td style={td}>{h.pa || 0}</td>
@@ -268,7 +268,7 @@ export default function TeamsPage({
                     <th style={th}>HGT</th><th style={th}>WGT</th><th style={{ ...th, textAlign: "left" }}>College</th>
                   </tr></thead>
                   <tbody>{players.map((p, i) => (
-                    <tr key={p.playerId} style={{ cursor: "pointer", borderBottom: "1px solid #161616", background: i === 0 ? `${tc.bg}11` : "transparent" }}
+                    <tr key={p.playerId} style={{ cursor: "pointer", borderBottom: "1px solid #1e1e1e", background: i === 0 ? `${tc.bg}11` : "transparent" }}
                         onClick={() => navigateToPlayer(p.playerId)}
                         onMouseEnter={(e) => (e.currentTarget.style.background = "#1a1614")}
                         onMouseLeave={(e) => (e.currentTarget.style.background = i === 0 ? `${tc.bg}11` : "transparent")}>
@@ -289,7 +289,7 @@ export default function TeamsPage({
             );
           })}
           {teamRoster.length === 0 && (
-            <div style={{ color: "#666", fontSize: 10, padding: 30, textAlign: "center", background: "#0c0c0c", borderRadius: 8, border: "1px solid #1a1a1a" }}>
+            <div style={{ color: "#666", fontSize: 10, padding: 30, textAlign: "center", background: "#0c0c0c", borderRadius: 8, border: "1px solid #2a2a2a" }}>
               No roster data for {teamFilter}. Upload a roster CSV in Settings.
             </div>
           )}
@@ -316,7 +316,7 @@ function StatTable({ title, color, rows, cols, nav }) {
   const sortKey = cols[2]?.[1] || cols[1]?.[1];
   const sorted = [...rows].sort((a, b) => (b[sortKey] || 0) - (a[sortKey] || 0));
   return (
-    <div style={{ background: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 8, marginBottom: 12, overflow: "hidden" }}>
+    <div style={{ background: "#0c0c0c", border: "1px solid #2a2a2a", borderRadius: 8, marginBottom: 12, overflow: "hidden" }}>
       <div style={{ background: `${color}1a`, borderBottom: `1px solid ${color}33`, padding: "7px 12px", fontSize: 10, fontWeight: "bold", letterSpacing: 1, color }}>{title}</div>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
         <thead><tr style={{ color: "#666", borderBottom: "1px solid #222" }}>
@@ -324,7 +324,7 @@ function StatTable({ title, color, rows, cols, nav }) {
           {cols.map(([lbl]) => <th key={lbl} style={th}>{lbl}</th>)}
         </tr></thead>
         <tbody>{sorted.slice(0, 15).map((s, i) => (
-          <tr key={i} onClick={() => s.playerId != null && nav?.(s.playerId != null ? s.playerId : s.playerName)} style={{ borderBottom: "1px solid #161616", cursor: nav ? "pointer" : "default" }}>
+          <tr key={i} onClick={() => s.playerId != null && nav?.(s.playerId != null ? s.playerId : s.playerName)} style={{ borderBottom: "1px solid #1e1e1e", cursor: nav ? "pointer" : "default" }}>
             <td style={{ ...td, textAlign: "left", padding: "4px 10px", fontWeight: "bold", color: "#ddd" }}>{s.playerName}</td>
             {cols.map(([lbl, key]) => <td key={lbl} style={{ ...td, color: "#bbb" }}>{s[key] != null ? s[key] : 0}</td>)}
           </tr>))}</tbody>

@@ -201,7 +201,7 @@ export default function PlayerPage({
               style={{
                 fontSize: 9, fontFamily: "inherit", cursor: has ? "pointer" : "not-allowed",
                 padding: "3px 7px", borderRadius: 3,
-                border: `1px solid ${active ? "#26867a" : has ? "#222" : "#161616"}`,
+                border: `1px solid ${active ? "#26867a" : has ? "#222" : "#1e1e1e"}`,
                 background: active ? "#15201f" : "transparent",
                 color: active ? "#26867a" : has ? "#bbb" : "#444",
                 fontWeight: active ? "bold" : "normal",
@@ -241,7 +241,7 @@ export default function PlayerPage({
               style={{
                 fontSize: 9, fontFamily: "inherit", cursor: has ? "pointer" : "not-allowed",
                 padding: "3px 7px", borderRadius: 3,
-                border: `1px solid ${active ? "#a8651e" : has ? "#222" : "#161616"}`,
+                border: `1px solid ${active ? "#a8651e" : has ? "#222" : "#1e1e1e"}`,
                 background: active ? "#1a1208" : "transparent",
                 color: active ? "#a8651e" : has ? "#bbb" : "#444",
                 fontWeight: active ? "bold" : "normal",
@@ -258,10 +258,10 @@ export default function PlayerPage({
       {searchResults.length > 0 && (
         <div style={{
           marginTop: 8,
-          background: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 6,
+          background: "#0c0c0c", border: "1px solid #2a2a2a", borderRadius: 6,
           maxHeight: 320, overflowY: "auto", boxShadow: "0 4px 12px rgba(0,0,0,0.6)",
         }}>
-          <div style={{ padding: "4px 10px", fontSize: 7, color: "#666", letterSpacing: 1, borderBottom: "1px solid #1a1a1a", background: "#0a0a0a" }}>
+          <div style={{ padding: "4px 10px", fontSize: 7, color: "#666", letterSpacing: 1, borderBottom: "1px solid #2a2a2a", background: "#0a0a0a" }}>
             {searchResults.length} MATCH{searchResults.length === 1 ? "" : "ES"}
             {letterFilter ? ` · LAST=${letterFilter}` : ""}
             {positionFilter ? ` · POS=${positionFilter}` : ""}
@@ -274,7 +274,7 @@ export default function PlayerPage({
                 onClick={() => pickPlayer(p.playerId)}
                 style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "6px 12px 6px 10px", borderBottom: "1px solid #1a1a1a", cursor: "pointer",
+                  padding: "6px 12px 6px 10px", borderBottom: "1px solid #2a2a2a", cursor: "pointer",
                   borderLeft: `3px solid ${c.bg}`,
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#1a1614")}
@@ -312,7 +312,7 @@ export default function PlayerPage({
         <div style={{ fontSize: 9, color: "#666", marginBottom: 8, letterSpacing: 1 }}>
           TOP 50 BY OVERALL — click any player to view profile, or search above
         </div>
-        <div style={{ background: "#0c0c0c", borderRadius: 8, border: "1px solid #1a1a1a", overflow: "hidden" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, border: "1px solid #2a2a2a", overflow: "hidden" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
             <thead>
               <tr style={{ background: "#0a0a0a", color: "#666" }}>
@@ -331,7 +331,7 @@ export default function PlayerPage({
                 <tr
                   key={p.playerId}
                   onClick={() => pickPlayer(p.playerId)}
-                  style={{ cursor: "pointer", borderBottom: "1px solid #161616", borderLeft: `3px solid ${c.bg}` }}
+                  style={{ cursor: "pointer", borderBottom: "1px solid #1e1e1e", borderLeft: `3px solid ${c.bg}` }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#1a1614")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
@@ -548,7 +548,7 @@ export default function PlayerPage({
 
       {/* Body grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#d4a017", marginBottom: 10, letterSpacing: 1 }}>
             ATTRIBUTES
           </div>
@@ -574,7 +574,7 @@ export default function PlayerPage({
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <StatsBlock player={player} stats={myStats} />
 
-          <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+          <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
             <div style={{ fontSize: 10, fontWeight: "bold", color: "#3b6db5", marginBottom: 10, letterSpacing: 1 }}>
               CONTRACT
             </div>
@@ -612,7 +612,7 @@ export default function PlayerPage({
 function StatsBlock({ player, stats }) {
   if (!stats) {
     return (
-      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
         <div style={{ fontSize: 10, fontWeight: "bold", color: "#15803d", marginBottom: 10, letterSpacing: 1 }}>
           SEASON STATS
         </div>
@@ -772,7 +772,7 @@ function StatsBlock({ player, stats }) {
   // ── RETURNS (KR + PR combined) ──────────────────────
   if (has("kickReturnAttempts", "puntReturnAttempts")) {
     sections.push(
-      <div key="returns" style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+      <div key="returns" style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
         <div style={{ fontSize: 10, fontWeight: "bold", color: "#26867a", marginBottom: 10, letterSpacing: 1 }}>RETURNS</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <SubTable title="KICK RETURNS" rows={[
@@ -811,7 +811,7 @@ function StatsBlock({ player, stats }) {
 
   // Header row with games played, regardless
   const header = (
-    <div style={{ background: "#0c0c0c", borderRadius: 8, padding: "8px 12px", border: "1px solid #1a1a1a", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div style={{ background: "#0c0c0c", borderRadius: 8, padding: "8px 12px", border: "1px solid #2a2a2a", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
       <div style={{ fontSize: 10, fontWeight: "bold", color: "#15803d", letterSpacing: 1 }}>SEASON STATS</div>
       <div style={{ fontSize: 9, color: "#888" }}>
         <span style={{ color: "#666" }}>GP </span>
@@ -824,7 +824,7 @@ function StatsBlock({ player, stats }) {
     return (
       <>
         {header}
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 14, border: "1px solid #1a1a1a", fontSize: 9, color: "#666", textAlign: "center" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 14, border: "1px solid #2a2a2a", fontSize: 9, color: "#666", textAlign: "center" }}>
           Player appeared in {stats.gamesPlayed || 0} game{stats.gamesPlayed === 1 ? "" : "s"} but recorded no stats.
         </div>
       </>
@@ -841,7 +841,7 @@ function StatsBlock({ player, stats }) {
 
 function StatTable({ title, color, rows, footer }) {
   return (
-    <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a", borderLeft: `3px solid ${color}` }}>
+    <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a", borderLeft: `3px solid ${color}` }}>
       <div style={{ fontSize: 10, fontWeight: "bold", color, marginBottom: 8, letterSpacing: 1 }}>{title}</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(78px, 1fr))", gap: 4 }}>
         {rows.map(([label, v, kind]) => (
@@ -850,7 +850,7 @@ function StatTable({ title, color, rows, footer }) {
       </div>
       {footer && footer.length > 0 && (
         <>
-          <div style={{ borderTop: "1px solid #1a1a1a", margin: "10px 0 6px" }} />
+          <div style={{ borderTop: "1px solid #2a2a2a", margin: "10px 0 6px" }} />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(78px, 1fr))", gap: 4 }}>
             {footer.map(([label, v, kind]) => (
               <StatCell key={label} label={label} value={v} kind={kind} />

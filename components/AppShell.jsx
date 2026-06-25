@@ -609,7 +609,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
 
   // ── Styles ───────────────────────────────────────────────
   const bg = darkMode ? "#0a0a0a" : "#f5f5f5";
-  const border = darkMode ? "#222" : "#ddd";
+  const border = darkMode ? "#333" : "#ddd";
   const text = darkMode ? "#e0e0e0" : "#111";
   const textMuted = darkMode ? "#999" : "#666";
 
@@ -692,7 +692,7 @@ const TEAM_ABBRS = [
 function LeagueHeader({ navigateToTeam, leagueName }) {
   const [bannerOk, setBannerOk] = React.useState(true);
   return (
-    <div style={{ background: "#050505", borderBottom: "1px solid #161616" }}>
+    <div style={{ background: "#050505", borderBottom: "1px solid #2a2a2a" }}>
       {/* Logo strip */}
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: 4, padding: "6px 10px" }}>
         {TEAM_ABBRS.map((abbr) => (
@@ -832,7 +832,7 @@ function NavBar({ panel, setPanel, duplicateCount, isAdmin }) {
   return (
     // NOTE: flexWrap (not overflowX:auto) — an overflow container CLIPS the
     // absolutely-positioned dropdown menus, which is what made them invisible.
-    <div ref={containerRef} style={{ display: "flex", alignItems: "stretch", flexWrap: "wrap", background: "#0c0c0c", position: "relative", zIndex: 50 }}>
+    <div ref={containerRef} style={{ display: "flex", alignItems: "stretch", flexWrap: "wrap", background: "#0c0c0c", position: "relative", zIndex: 50, borderBottom: "1px solid #2a2a2a" }}>
       {groups.map((g) => {
         const active = isGroupActive(g);
         const isOpen = openId === g.id;

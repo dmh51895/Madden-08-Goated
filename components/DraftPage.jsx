@@ -61,7 +61,7 @@ export default function DraftPage({ draftBoard, draftPicks, teams, colleges, set
           </thead>
           <tbody>
             {roundBoard.map((p, i) => (
-              <tr key={p.id || i} style={{ borderBottom: "1px solid #1a1a1a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}>
+              <tr key={p.id || i} style={{ borderBottom: "1px solid #2a2a2a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}>
                 <td style={{ padding: "4px 6px", color: "#ffd700", fontWeight: "bold" }}>{p.pick || i + 1}</td>
                 <td style={{ padding: "4px 6px", fontWeight: "bold" }}>{p.firstName} {p.lastName}</td>
                 <td style={{ padding: "4px 6px", color: "#c77dff" }}>{p.position}</td>
@@ -85,7 +85,7 @@ export default function DraftPage({ draftBoard, draftPicks, teams, colleges, set
           </thead>
           <tbody>
             {roundPicks.map((p, i) => (
-              <tr key={p.id || i} style={{ borderBottom: "1px solid #1a1a1a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}>
+              <tr key={p.id || i} style={{ borderBottom: "1px solid #2a2a2a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}>
                 <td style={{ padding: "4px 6px", color: "#ffd700", fontWeight: "bold" }}>{p.pick || i + 1}</td>
                 <td style={{ padding: "4px 6px" }}>{formatCell(p.team, p.owner, p.originalTeam)}</td>
                 <td style={{ padding: "4px 6px", fontWeight: "bold" }}>{p.player || "TBD"}</td>

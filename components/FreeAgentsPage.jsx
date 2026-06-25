@@ -89,7 +89,7 @@ export default function FreeAgentsPage({ freeAgents, teams, navigateToPlayer, on
           {sorted.map((p, i) => (
             <tr
               key={p.playerId}
-              style={{ cursor: "pointer", borderBottom: "1px solid #1a1a1a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}
+              style={{ cursor: "pointer", borderBottom: "1px solid #2a2a2a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}
               onClick={() => navigateToPlayer(p.playerId)}
               onMouseEnter={(e) => (e.currentTarget.style.background = "#1a1a2a")}
               onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 === 0 ? "#0c0c0c" : "transparent")}

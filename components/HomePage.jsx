@@ -4,10 +4,10 @@ import { teamColor, teamAccent } from "../data/teamColors";
 
 const HEADER_STYLE = { fontSize: 11, fontWeight: "bold", color: "#15803d", letterSpacing: 1 };
 const ROW_EVEN = "transparent";
-const ROW_ODD = "#0a0a0a";
+const ROW_ODD = "#0e0e0e";
 const ROW_HOVER = "#1a1614";
-const BORDER = "1px solid #1a1a1a";
-const INNER_BORDER = "1px solid #161616";
+const BORDER = "1px solid #2a2a2a";
+const INNER_BORDER = "1px solid #1e1e1e";
 
 function StatTable({ title, color, items, statKey, statLabel, onPlayerClick, nameFn, teamFn, posFn }) {
   return (
@@ -421,7 +421,7 @@ function PlayoffBracket({ standings, teams, navigateToTeam, year, settings, onUp
       </div>
 
       {/* Tab Bar */}
-      <div style={{ display: "flex", borderBottom: "1px solid #1a1a1a" }}>
+      <div style={{ display: "flex", borderBottom: "1px solid #2a2a2a" }}>
         {ROUNDS.map((r) => (
           <button
             key={r}
@@ -535,7 +535,7 @@ function BracketMatchup({ game, round, idx, editable, navigateToTeam, getTeamByA
   return (
     <div
       style={{
-        background: "#0a0a0a", borderRadius: 6, border: "1px solid #1a1a1a", padding: "6px 8px",
+        background: "#0a0a0a", borderRadius: 6, border: "1px solid #2a2a2a", padding: "6px 8px",
         cursor: editable ? "pointer" : "default",
       }}
       onClick={() => editable && setEditing(true)}

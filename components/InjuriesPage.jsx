@@ -209,7 +209,7 @@ export default function InjuriesPage({ players = [], navigateToPlayer, currentUs
           {/* Counts row */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 10 }}>
             {INJURY_STATUSES.map((s) => (
-              <div key={s} style={{ background: "#0c0c0c", borderRadius: 6, padding: "8px 10px", border: "1px solid #1a1a1a", borderLeft: `3px solid ${STATUS_COLOR[s]}` }}>
+              <div key={s} style={{ background: "#0c0c0c", borderRadius: 6, padding: "8px 10px", border: "1px solid #2a2a2a", borderLeft: `3px solid ${STATUS_COLOR[s]}` }}>
                 <div style={{ fontSize: 16, fontWeight: "bold", color: STATUS_COLOR[s] }}>{counts[s]}</div>
                 <div style={{ fontSize: 7, color: "#666", letterSpacing: 1 }}>{s.toUpperCase()}</div>
               </div>
@@ -236,7 +236,7 @@ export default function InjuriesPage({ players = [], navigateToPlayer, currentUs
                   const tc = teamColor(p.teamAbbr);
                   const canEditThis = canEdit;
                   return (
-                    <tr key={p._injuryId} style={{ borderBottom: "1px solid #161616", background: i % 2 === 0 ? "#0c0c0c" : "transparent", borderLeft: `3px solid ${tc.bg}` }}>
+                    <tr key={p._injuryId} style={{ borderBottom: "1px solid #1e1e1e", background: i % 2 === 0 ? "#0c0c0c" : "transparent", borderLeft: `3px solid ${tc.bg}` }}>
                       <td style={{ ...td, fontWeight: "bold", cursor: "pointer" }} onClick={() => navigateToPlayer?.(p.playerId)}>
                         {p.firstName} {p.lastName}
                       </td>
@@ -265,7 +265,7 @@ export default function InjuriesPage({ players = [], navigateToPlayer, currentUs
               </tbody>
             </table>
           ) : (
-            <div style={{ color: "#666", fontSize: 10, padding: 40, textAlign: "center", background: "#0c0c0c", borderRadius: 8, border: "1px solid #1a1a1a" }}>
+            <div style={{ color: "#666", fontSize: 10, padding: 40, textAlign: "center", background: "#0c0c0c", borderRadius: 8, border: "1px solid #2a2a2a" }}>
               No active injuries.{canEdit ? " Click MARK PLAYER INJURED to add one." : ""}
             </div>
           )}
@@ -273,7 +273,7 @@ export default function InjuriesPage({ players = [], navigateToPlayer, currentUs
       ) : (
         // ── INJURY RISK view (real data from Madden injury rating) ──
         <>
-          <div style={{ background: "#0c0c0c", borderRadius: 6, padding: 10, marginBottom: 10, border: "1px solid #1a1a1a", fontSize: 9, color: "#888" }}>
+          <div style={{ background: "#0c0c0c", borderRadius: 6, padding: 10, marginBottom: 10, border: "1px solid #2a2a2a", fontSize: 9, color: "#888" }}>
             Players sorted by Madden Injury rating (lower = more injury-prone). This is roster attribute data, not live injuries.
           </div>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
@@ -295,7 +295,7 @@ export default function InjuriesPage({ players = [], navigateToPlayer, currentUs
                 const flagged = !!injuries[String(p.playerId)];
                 return (
                   <tr key={p.playerId}
-                      style={{ borderBottom: "1px solid #161616", background: i % 2 === 0 ? "#0c0c0c" : "transparent", borderLeft: `3px solid ${tc.bg}`, cursor: "pointer" }}
+                      style={{ borderBottom: "1px solid #1e1e1e", background: i % 2 === 0 ? "#0c0c0c" : "transparent", borderLeft: `3px solid ${tc.bg}`, cursor: "pointer" }}
                       onClick={() => navigateToPlayer?.(p.playerId)}>
                     <td style={{ ...td, fontWeight: "bold" }}>{p.firstName} {p.lastName}</td>
                     <td style={{ ...td, color: teamAccent(p.teamAbbr), fontWeight: "bold" }}>{p.teamAbbr}</td>

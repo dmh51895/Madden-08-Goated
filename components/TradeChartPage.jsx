@@ -123,7 +123,7 @@ export default function TradeChartPage({ tradeChart, draftPicks, teams, onImport
             </thead>
             <tbody>
               {filteredChart.map((row, i) => (
-                <tr key={row.id} style={{ borderBottom: "1px solid #1a1a1a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}>
+                <tr key={row.id} style={{ borderBottom: "1px solid #2a2a2a", background: i % 2 === 0 ? "#0c0c0c" : "transparent" }}>
                   <td style={{ padding: "4px 6px", fontWeight: "bold", color: "#ff4500" }}>{row.originalTeam}</td>
                   <td style={{ padding: "4px 6px", textAlign: "center" }}>{formatCell(row.round1)}</td>
                   <td style={{ padding: "4px 6px", textAlign: "center" }}>{formatCell(row.round2)}</td>
@@ -145,7 +145,7 @@ export default function TradeChartPage({ tradeChart, draftPicks, teams, onImport
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>DRAFT ORDER</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 8 }}>
             {Array.from({ length: maxRounds }, (_, r) => r + 1).map((round) => (
-              <div key={round} style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #1a1a1a" }}>
+              <div key={round} style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #2a2a2a" }}>
                 <div style={{ fontSize: 9, fontWeight: "bold", color: round <= 4 ? "#ffd700" : "#00d4ff", marginBottom: 6 }}>
                   ROUND {round}
                 </div>
@@ -153,7 +153,7 @@ export default function TradeChartPage({ tradeChart, draftPicks, teams, onImport
                   const cell = round === 1 ? row.round1 : round === 2 ? row.round2 : round === 3 ? row.round3 : round === 4 ? row.round4 : "";
                   if (!cell) return null;
                   return (
-                    <div key={row.id} style={{ fontSize: 8, padding: "2px 0", borderBottom: "1px solid #1a1a1a" }}>
+                    <div key={row.id} style={{ fontSize: 8, padding: "2px 0", borderBottom: "1px solid #2a2a2a" }}>
                       <span style={{ color: "#666" }}>{i + 1}.</span>{" "}
                       {formatCell(cell)}
                     </div>

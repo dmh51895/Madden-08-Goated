@@ -99,11 +99,11 @@ export default function SchedulesPage({ schedule, teams, standings, navigateToTe
       )}
 
       {gameLogs.length > 0 && (
-        <div style={{ background: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 8, padding: 10, marginBottom: 12 }}>
+        <div style={{ background: "#0c0c0c", border: "1px solid #2a2a2a", borderRadius: 8, padding: 10, marginBottom: 12 }}>
           <div style={{ fontSize: 9, fontWeight: "bold", color: "#ffd700", marginBottom: 6 }}>UPLOADED GAME LOGS</div>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #1a1a1a", color: "#666" }}>
+              <tr style={{ borderBottom: "1px solid #2a2a2a", color: "#666" }}>
                 <th style={{ textAlign: "left", padding: "3px 6px" }}>Matchup</th>
                 <th style={{ textAlign: "center", padding: "3px 6px" }}>Score</th>
                 <th style={{ textAlign: "center", padding: "3px 6px" }}>Status</th>
@@ -112,7 +112,7 @@ export default function SchedulesPage({ schedule, teams, standings, navigateToTe
             </thead>
             <tbody>
               {gameLogs.map((g, i) => (
-                <tr key={`${g.filename}-${i}`} style={{ borderBottom: "1px solid #1a1a1a" }}>
+                <tr key={`${g.filename}-${i}`} style={{ borderBottom: "1px solid #2a2a2a" }}>
                   <td style={{ padding: "3px 6px" }}>
                     <span style={{ color: "#aaa" }}>{g.away}</span> @ <span style={{ color: "#aaa" }}>{g.home}</span>
                   </td>
@@ -145,7 +145,7 @@ export default function SchedulesPage({ schedule, teams, standings, navigateToTe
                   background: "#0c0c0c",
                   borderRadius: 8,
                   padding: 10,
-                  border: "1px solid #1a1a1a",
+                  border: "1px solid #2a2a2a",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -212,7 +212,7 @@ export default function SchedulesPage({ schedule, teams, standings, navigateToTe
       )}
 
       {/* Season Overview */}
-      <div style={{ marginTop: 20, background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+      <div style={{ marginTop: 20, background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
         <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>SEASON OVERVIEW</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8 }}>
           <div style={{ textAlign: "center" }}>

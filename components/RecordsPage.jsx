@@ -44,7 +44,7 @@ export default function RecordsPage({ roster, playerStats, colleges, navigateToP
         ))}
       </div>
 
-      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+      <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
         <div style={{ fontSize: 10, fontWeight: "bold", color: cat.color, marginBottom: 8 }}>
           {cat.label.toUpperCase()} LEADERS
         </div>
@@ -64,7 +64,7 @@ export default function RecordsPage({ roster, playerStats, colleges, navigateToP
               <tr
                 key={p.playerId}
                 style={{
-                  borderBottom: "1px solid #1a1a1a",
+                  borderBottom: "1px solid #2a2a2a",
                   background: i % 2 === 0 ? "#0c0c0c" : "transparent",
                   cursor: "pointer",
                 }}
@@ -93,7 +93,7 @@ export default function RecordsPage({ roster, playerStats, colleges, navigateToP
         {["QB", "HB", "WR", "TE"].map((pos) => {
           const top = [...roster].filter((p) => p.positionAbbr === pos).sort((a, b) => b.overall - a.overall)[0];
           return top ? (
-            <div key={pos} style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #1a1a1a" }}>
+            <div key={pos} style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #2a2a2a" }}>
               <div style={{ fontSize: 8, color: "#666", letterSpacing: 1 }}>TOP {pos}</div>
               <div style={{ fontSize: 12, fontWeight: "bold", color: "#ffd700" }}>{top.firstName} {top.lastName}</div>
               <div style={{ fontSize: 8, color: "#aaa" }}>{top.teamAbbr} · OVR {top.overall}</div>

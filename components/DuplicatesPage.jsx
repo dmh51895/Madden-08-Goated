@@ -65,7 +65,7 @@ export default function DuplicatesPage({ duplicates = [], onApplyRenames }) {
         </button>
       </div>
 
-      <div style={{ background: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 8, padding: 10, marginBottom: 12, fontSize: 9, color: "#aaa" }}>
+      <div style={{ background: "#0c0c0c", border: "1px solid #2a2a2a", borderRadius: 8, padding: 10, marginBottom: 12, fontSize: 9, color: "#aaa" }}>
         Players sharing identical first + last names break stat attribution from
         game logs (the log only writes the printed name). Rename one or more so
         every player on every roster has a unique name. The first row in each
@@ -80,7 +80,7 @@ export default function DuplicatesPage({ duplicates = [], onApplyRenames }) {
       )}
 
       {filtered.map((dupe) => (
-        <div key={dupe.name} style={{ background: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 8, padding: 10, marginBottom: 10 }}>
+        <div key={dupe.name} style={{ background: "#0c0c0c", border: "1px solid #2a2a2a", borderRadius: 8, padding: 10, marginBottom: 10 }}>
           <div style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
             <span style={{ fontSize: 10, fontWeight: "bold", color: "#ff9d4d" }}>{dupe.name}</span>
             <span style={{ fontSize: 8, color: "#666", marginLeft: 8 }}>× {dupe.count}</span>
@@ -94,7 +94,7 @@ export default function DuplicatesPage({ duplicates = [], onApplyRenames }) {
           </div>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #1a1a1a", color: "#666" }}>
+              <tr style={{ borderBottom: "1px solid #2a2a2a", color: "#666" }}>
                 <th style={{ textAlign: "left", padding: "3px 6px" }}>Team</th>
                 <th style={{ textAlign: "left", padding: "3px 6px" }}>Pos</th>
                 <th style={{ textAlign: "center", padding: "3px 6px" }}>OVR</th>
@@ -110,7 +110,7 @@ export default function DuplicatesPage({ duplicates = [], onApplyRenames }) {
                 const ln = edit.lastName !== undefined ? edit.lastName : p.lastName;
                 const changed = (fn !== p.firstName) || (ln !== p.lastName);
                 return (
-                  <tr key={p.playerId} style={{ borderBottom: "1px solid #1a1a1a", background: changed ? "#1a1a0a" : "transparent" }}>
+                  <tr key={p.playerId} style={{ borderBottom: "1px solid #2a2a2a", background: changed ? "#1a1a0a" : "transparent" }}>
                     <td style={{ padding: "3px 6px", color: "#ff4500" }}>{p.team}</td>
                     <td style={{ padding: "3px 6px", color: "#c77dff" }}>{p.position}</td>
                     <td style={{ padding: "3px 6px", textAlign: "center", color: p.overall >= 90 ? "#ffd700" : "#aaa" }}>{p.overall}</td>

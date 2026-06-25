@@ -47,7 +47,7 @@ export default function StandingsPage({ standings, teams, navigateToTeam, year }
               <tr
                 key={t.abbr}
                 style={{
-                  borderBottom: `1px solid #1a1a1a`,
+                  borderBottom: `1px solid #2a2a2a`,
                   cursor: "pointer",
                   background: i % 2 === 0 ? "#0c0c0c" : "transparent",
                 }}

@@ -57,7 +57,7 @@ export default function CoachesPage({ coaches, teams, navigateToTeam }) {
             <tr
               key={c.id}
               style={{
-                borderBottom: "1px solid #1a1a1a",
+                borderBottom: "1px solid #2a2a2a",
                 background: i % 2 === 0 ? "#0c0c0c" : "transparent",
               }}
             >
@@ -82,12 +82,12 @@ export default function CoachesPage({ coaches, teams, navigateToTeam }) {
       </table>
 
       <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 8, color: "#666", letterSpacing: 1 }}>MOST WINS</div>
           <div style={{ fontSize: 12, fontWeight: "bold", color: "#00d8a8" }}>{sorted[0]?.name}</div>
           <div style={{ fontSize: 8, color: "#aaa" }}>{sorted[0]?.team} · {sorted[0]?.wins} wins</div>
         </div>
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 8, color: "#666", letterSpacing: 1 }}>MOST TITLES</div>
           <div style={{ fontSize: 12, fontWeight: "bold", color: "#ffd700" }}>
             {[...sorted].sort((a, b) => b.titles - a.titles)[0]?.name}
@@ -96,7 +96,7 @@ export default function CoachesPage({ coaches, teams, navigateToTeam }) {
             {[...sorted].sort((a, b) => b.titles - a.titles)[0]?.titles} championships
           </div>
         </div>
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 10, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 8, color: "#666", letterSpacing: 1 }}>MOST EXPERIENCED</div>
           <div style={{ fontSize: 12, fontWeight: "bold", color: "#c77dff" }}>
             {[...sorted].sort((a, b) => b.yearsCoaching - a.yearsCoaching)[0]?.name}

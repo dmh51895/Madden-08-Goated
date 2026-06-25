@@ -56,7 +56,7 @@ export default function PowerPage({ standings, teams, navigateToTeam }) {
                   alignItems: "center",
                   gap: 8,
                   padding: "6px 8px",
-                  borderBottom: "1px solid #1a1a1a",
+                  borderBottom: "1px solid #2a2a2a",
                   background: i % 2 === 0 ? "#0c0c0c" : "transparent",
                   cursor: "pointer",
                 }}
@@ -97,7 +97,7 @@ export default function PowerPage({ standings, teams, navigateToTeam }) {
                   alignItems: "center",
                   gap: 8,
                   padding: "6px 8px",
-                  borderBottom: "1px solid #1a1a1a",
+                  borderBottom: "1px solid #2a2a2a",
                   background: i % 2 === 0 ? "#0c0c0c" : "transparent",
                   cursor: "pointer",
                 }}
@@ -126,7 +126,7 @@ export default function PowerPage({ standings, teams, navigateToTeam }) {
         </div>
       </div>
 
-      <div style={{ marginTop: 16, background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+      <div style={{ marginTop: 16, background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
         <div style={{ fontSize: 10, fontWeight: "bold", color: "#c77dff", marginBottom: 6 }}>POWER FORMULA</div>
         <div style={{ fontSize: 8, color: "#999", lineHeight: 1.6 }}>
           Rankings combine win percentage, point differential, strength of schedule, and recent performance (last 5 games).

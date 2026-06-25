@@ -41,7 +41,7 @@ export default function SettingsPage({
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* League Config */}
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>LEAGUE</div>
           <div style={{ marginBottom: 8 }}>
             <div style={{ fontSize: 8, color: "#666", marginBottom: 2 }}>League Name</div>
@@ -76,7 +76,7 @@ export default function SettingsPage({
         </div>
 
         {/* Feature Toggles */}
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>FEATURES</div>
           {[
             { key: "tradesEnabled", label: "Trades Enabled" },
@@ -106,7 +106,7 @@ export default function SettingsPage({
         <PlayoffEditor settings={settings} onUpdateSettings={onUpdateSettings} teams={teams} />
 
         {/* File Uploads */}
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>📁 FILE UPLOADS</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {[
@@ -132,7 +132,7 @@ export default function SettingsPage({
           </div>
 
           {/* Export current roster as a valid NZA-editor CSV */}
-          <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #1a1a1a" }}>
+          <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #2a2a2a" }}>
             <div style={{ fontSize: 9, color: "#aaa", marginBottom: 6 }}>EXPORT</div>
             <button
               onClick={onExportRoster}
@@ -149,7 +149,7 @@ export default function SettingsPage({
         </div>
 
         {/* User Login */}
-        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+        <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>👤 USER ACCESS</div>
           {currentUser ? (
             <div>
@@ -235,7 +235,7 @@ function PlayoffEditor({ settings, onUpdateSettings, teams }) {
   }
 
   return (
-    <div style={{ gridColumn: "1 / -1", background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #1a1a1a" }}>
+    <div style={{ gridColumn: "1 / -1", background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
       <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>🏈 PLAYOFF BRACKET</div>
       <div style={{ fontSize: 8, color: "#666", marginBottom: 10 }}>
         Wild Card is auto-generated from standings. Enter Divisional, Conference, and Super Bowl games manually.
@@ -271,7 +271,7 @@ function PlayoffEditor({ settings, onUpdateSettings, teams }) {
       {activeRound !== "wildCard" && (
         <div>
           {getGames(activeRound).map((game, idx) => (
-            <div key={idx} style={{ display: "grid", gridTemplateColumns: "1fr 70px 70px 1fr auto", gap: 6, alignItems: "center", marginBottom: 6, padding: 8, background: "#0a0a0a", borderRadius: 6, border: "1px solid #1a1a1a" }}>
+            <div key={idx} style={{ display: "grid", gridTemplateColumns: "1fr 70px 70px 1fr auto", gap: 6, alignItems: "center", marginBottom: 6, padding: 8, background: "#0a0a0a", borderRadius: 6, border: "1px solid #2a2a2a" }}>
               <select value={game.home} onChange={(e) => updateGame(activeRound, idx, "home", e.target.value)}
                 style={{ fontSize: 9, padding: "4px 6px", borderRadius: 4, border: "1px solid #333", background: "#111", color: "#00d8a8", fontFamily: "inherit" }}>
                 <option value="">HOME</option>
