@@ -65,6 +65,12 @@ export default function PowerPage({ standings, teams, navigateToTeam }) {
                 <div style={{ fontSize: 14, fontWeight: "bold", color: i < 3 ? "#ffd700" : "#666", minWidth: 24 }}>
                   {i + 1}
                 </div>
+                <img
+                  src={`/logos/${t.abbr}.png`}
+                  alt={t.abbr}
+                  style={{ width: 24, height: 24, borderRadius: 4, background: "#111", objectFit: "contain" }}
+                  onError={(e) => { e.target.style.display = "none"; }}
+                />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 10, fontWeight: "bold" }}>{t.abbr}</div>
                   <div style={{ fontSize: 8, color: "#aaa" }}>{t.city}</div>
@@ -100,6 +106,12 @@ export default function PowerPage({ standings, teams, navigateToTeam }) {
                 <div style={{ fontSize: 14, fontWeight: "bold", color: "#666", minWidth: 24 }}>
                   {t.powerRanking}
                 </div>
+                <img
+                  src={`/logos/${t.abbr}.png`}
+                  alt={t.abbr}
+                  style={{ width: 24, height: 24, borderRadius: 4, background: "#111", objectFit: "contain" }}
+                  onError={(e) => { e.target.style.display = "none"; }}
+                />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 10, fontWeight: "bold" }}>{t.abbr}</div>
                   <div style={{ fontSize: 8, color: "#aaa" }}>{t.city}</div>
