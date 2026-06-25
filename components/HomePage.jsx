@@ -69,6 +69,7 @@ export default function HomePage({
   onGOTWImageUpload,
   gotwImage,
   year,
+  onUpdateSettings,
 }) {
   const [newsTitle, setNewsTitle] = useState(settings?.heroTitle || "Welcome to PCFTBALL");
   const [newsSubtitle, setNewsSubtitle] = useState(settings?.heroSubtitle || "Madden at its highest level");
@@ -304,7 +305,7 @@ export default function HomePage({
           </div>
 
           {/* Playoff Bracket */}
-          <PlayoffBracket standings={standings} teams={teams} navigateToTeam={navigateToTeam} year={year} />
+          <PlayoffBracket standings={standings} teams={teams} navigateToTeam={navigateToTeam} year={year} settings={settings} onUpdateSettings={onUpdateSettings} />
 
           {/* Headlines */}
           <div style={{ background: "#0c0c0c", borderRadius: 8, border: BORDER, overflow: "hidden" }}>
@@ -338,14 +339,14 @@ export default function HomePage({
 }
 
 /* ═══════════════════════════════════════════════════════
-   PLAYOFF BRACKET
+   PLAYOFF BRACKET — tabbed rounds
    ═══════════════════════════════════════════════════════ */
-function PlayoffBracket({ standings, teams, navigateToTeam, year }) {
-  if (!standings.length || !teams?.length) return null;
+function PlayoffBracket({ standings, teams, navigateToTeam, year, settings, onUpdateSettings }) {
+  const ROUNDS = ["wildCard", "divisional", "conference", "superBowl"];
+  const ROUND_LABELS = { wildCard: "WILD CARD", divisional: "DIVISIONAL", conference: "CONFERENCE", superBowl: "SUPER BOWL" };
+  const [activeRound, setActiveRound] = React.useState("wildCard");
 
-  const sorted = [...standings]
-    .sort((a, b) => (b.w - a.w) || ((b.diff || 0) - (a.diff || 0)));
-
+  const sorted = [...standings].sort((a, b) => (b.w - a.w) || ((b.diff || 0) - (a.diff || 0)));
   const seedList = sorted.map((t, i) => ({ ...t, seed: i + 1 }));
 
   let numTeams;
@@ -355,6 +356,7 @@ function PlayoffBracket({ standings, teams, navigateToTeam, year }) {
   else numTeams = 12;
 
   const bracketSeeds = seedList.slice(0, numTeams);
+  const playoffGames = settings?.playoffGames || {};
 
   function getTeamByAbbr(abbr) {
     return teams?.find((t) => (t.abbr || "").toUpperCase() === abbr.toUpperCase()) || null;
@@ -365,103 +367,201 @@ function PlayoffBracket({ standings, teams, navigateToTeam, year }) {
     return s ? `${s.w}-${s.l}` : "";
   }
 
-  let wcRounds, byes;
-  if (numTeams === 8) {
-    byes = 0;
-    wcRounds = [
-      [bracketSeeds[0], bracketSeeds[7]],
-      [bracketSeeds[3], bracketSeeds[4]],
-      [bracketSeeds[1], bracketSeeds[6]],
-      [bracketSeeds[2], bracketSeeds[5]],
-    ];
-  } else if (numTeams === 10) {
-    byes = 2;
-    wcRounds = [
-      [bracketSeeds[2], bracketSeeds[9]],
-      [bracketSeeds[3], bracketSeeds[8]],
-      [bracketSeeds[4], bracketSeeds[7]],
-      [bracketSeeds[5], bracketSeeds[6]],
-    ];
-  } else if (numTeams === 11) {
-    byes = 3;
-    wcRounds = [
-      [bracketSeeds[3], bracketSeeds[10]],
-      [bracketSeeds[4], bracketSeeds[9]],
-      [bracketSeeds[5], bracketSeeds[8]],
-    ];
-  } else {
-    byes = 4;
-    wcRounds = [
-      [bracketSeeds[4], bracketSeeds[11]],
-      [bracketSeeds[5], bracketSeeds[10]],
-      [bracketSeeds[6], bracketSeeds[9]],
-      [bracketSeeds[7], bracketSeeds[8]],
-    ];
+  // Auto-generate Wild Card matchups from seeds
+  function getWildCardMatchups() {
+    let byes, wcRounds;
+    if (numTeams === 8) {
+      byes = 0;
+      wcRounds = [[bracketSeeds[0], bracketSeeds[7]], [bracketSeeds[3], bracketSeeds[4]], [bracketSeeds[1], bracketSeeds[6]], [bracketSeeds[2], bracketSeeds[5]]];
+    } else if (numTeams === 10) {
+      byes = 2;
+      wcRounds = [[bracketSeeds[2], bracketSeeds[9]], [bracketSeeds[3], bracketSeeds[8]], [bracketSeeds[4], bracketSeeds[7]], [bracketSeeds[5], bracketSeeds[6]]];
+    } else if (numTeams === 11) {
+      byes = 3;
+      wcRounds = [[bracketSeeds[3], bracketSeeds[10]], [bracketSeeds[4], bracketSeeds[9]], [bracketSeeds[5], bracketSeeds[8]]];
+    } else {
+      byes = 4;
+      wcRounds = [[bracketSeeds[4], bracketSeeds[11]], [bracketSeeds[5], bracketSeeds[10]], [bracketSeeds[6], bracketSeeds[9]], [bracketSeeds[7], bracketSeeds[8]]];
+    }
+    return { byes, matchups: wcRounds.map(([h, a]) => ({ home: h?.abbr || "", away: a?.abbr || "", homeScore: null, awayScore: null })) };
   }
 
-  function MatchupSlot({ match }) {
-    if (!match) return null;
-    const [home, away] = match;
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 110 }}>
-        <BracketTeam seed={home.seed} abbr={home.abbr} record={getRecord(home.abbr)} teamData={getTeamByAbbr(home.abbr)} navigateToTeam={navigateToTeam} />
-        <BracketTeam seed={away.seed} abbr={away.abbr} record={getRecord(away.abbr)} teamData={getTeamByAbbr(away.abbr)} navigateToTeam={navigateToTeam} />
-      </div>
-    );
+  function getRoundGames(round) {
+    if (round === "wildCard") return getWildCardMatchups().matchups;
+    return playoffGames[round] || [];
   }
+
+  function updateGame(round, idx, field, value) {
+    const current = getRoundGames(round);
+    const updated = [...current];
+    updated[idx] = { ...updated[idx], [field]: value };
+    onUpdateSettings?.({ playoffGames: { ...playoffGames, [round]: updated } });
+  }
+
+  function addGame(round) {
+    const current = getRoundGames(round);
+    onUpdateSettings?.({ playoffGames: { ...playoffGames, [round]: [...current, { home: "", away: "", homeScore: null, awayScore: null }] } });
+  }
+
+  function removeGame(round, idx) {
+    const current = getRoundGames(round);
+    onUpdateSettings?.({ playoffGames: { ...playoffGames, [round]: current.filter((_, i) => i !== idx) } });
+  }
+
+  const currentMatchups = getRoundGames(activeRound);
+  const { byes } = getWildCardMatchups();
 
   return (
     <div style={{ background: "#0c0c0c", borderRadius: 8, border: BORDER, overflow: "hidden" }}>
-      <div style={{ background: "#15803d22", borderBottom: "1px solid #15803d33", padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      {/* Header */}
+      <div style={{ background: "#15803d22", borderBottom: "1px solid #15803d33", padding: "8px 12px" }}>
         <div style={{ fontSize: 10, fontWeight: "bold", color: "#15803d", letterSpacing: 1 }}>
           🏈 {year || ""} PLAYOFF BRACKET ({numTeams} TEAMS)
         </div>
       </div>
-      <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-        {byes > 0 && (
-          <div style={{ fontSize: 8, color: "#666", letterSpacing: 1 }}>
+
+      {/* Tab Bar */}
+      <div style={{ display: "flex", borderBottom: "1px solid #1a1a1a" }}>
+        {ROUNDS.map((r) => (
+          <button
+            key={r}
+            onClick={() => setActiveRound(r)}
+            style={{
+              flex: 1, padding: "7px 4px", fontSize: 8, fontWeight: "bold", letterSpacing: 1,
+              border: "none", borderBottom: activeRound === r ? "2px solid #15803d" : "2px solid transparent",
+              background: activeRound === r ? "#15803d15" : "transparent",
+              color: activeRound === r ? "#15803d" : "#666",
+              cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
+            }}
+          >
+            {ROUND_LABELS[r]}
+          </button>
+        ))}
+      </div>
+
+      {/* Round Content */}
+      <div style={{ padding: 10 }}>
+        {activeRound === "wildCard" && byes > 0 && (
+          <div style={{ fontSize: 8, color: "#666", letterSpacing: 1, marginBottom: 8 }}>
             {byes} TEAM{byes > 1 ? "S" : ""} WITH BYE: {bracketSeeds.slice(0, byes).map((t) => t.abbr).join(", ")}
           </div>
         )}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {wcRounds.map((match, i) => (
-            <div key={i} style={{ background: "#0a0a0a", borderRadius: 6, border: "1px solid #1a1a1a", padding: 8, minWidth: 130, flex: "1 1 130px", maxWidth: 200 }}>
-              <div style={{ fontSize: 7, color: "#444", letterSpacing: 1, marginBottom: 6 }}>WILD CARD</div>
-              <MatchupSlot match={match} />
+
+        {currentMatchups.length === 0 ? (
+          <div style={{ padding: 16, textAlign: "center" }}>
+            <div style={{ fontSize: 9, color: "#555", marginBottom: 8 }}>
+              {activeRound === "wildCard" ? "No standings data" : `No ${ROUND_LABELS[activeRound].toLowerCase()} games entered`}
             </div>
-          ))}
-        </div>
-        <div style={{ fontSize: 8, color: "#666", textAlign: "center", letterSpacing: 1, marginTop: 4 }}>
-          ↑ WILD CARD → DIVISIONAL → SUPER BOWL ↑
-        </div>
+            {activeRound !== "wildCard" && (
+              <button
+                onClick={() => addGame(activeRound)}
+                style={{ fontSize: 8, padding: "4px 10px", borderRadius: 4, border: "1px solid #15803d", background: "#15803d22", color: "#15803d", cursor: "pointer", fontFamily: "inherit" }}
+              >
+                + ADD GAME
+              </button>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {currentMatchups.map((game, idx) => (
+              <BracketMatchup
+                key={idx}
+                game={game}
+                round={activeRound}
+                idx={idx}
+                editable={activeRound !== "wildCard"}
+                navigateToTeam={navigateToTeam}
+                getTeamByAbbr={getTeamByAbbr}
+                getRecord={getRecord}
+                onUpdate={(field, val) => updateGame(activeRound, idx, field, val)}
+                onRemove={() => removeGame(activeRound, idx)}
+              />
+            ))}
+            {activeRound !== "wildCard" && (
+              <button
+                onClick={() => addGame(activeRound)}
+                style={{ fontSize: 8, padding: "4px 10px", borderRadius: 4, border: "1px dashed #333", background: "transparent", color: "#666", cursor: "pointer", fontFamily: "inherit", marginTop: 4 }}
+              >
+                + ADD GAME
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function BracketTeam({ seed, abbr, record, teamData, navigateToTeam }) {
-  const seedColors = [
-    { bg: "#d4a017", fg: "#000" },
-    { bg: "#c0c0c0", fg: "#000" },
-    { bg: "#cd7f32", fg: "#000" },
-  ];
-  const seedColor = seedColors[Math.min(seed - 1, seedColors.length - 1)] || { bg: "#15803d", fg: "#fff" };
-  const teamColors = teamData?.primary ? { bg: `#${teamData.primary}`, fg: "#fff" } : seedColor;
+function BracketMatchup({ game, round, idx, editable, navigateToTeam, getTeamByAbbr, getRecord, onUpdate, onRemove }) {
+  const [editing, setEditing] = React.useState(false);
+  const [localHome, setLocalHome] = React.useState(game.home || "");
+  const [localAway, setLocalAway] = React.useState(game.away || "");
+  const [localHomeScore, setLocalHomeScore] = React.useState(game.homeScore ?? "");
+  const [localAwayScore, setLocalAwayScore] = React.useState(game.awayScore ?? "");
+
+  const homeWon = game.homeScore != null && game.awayScore != null && game.homeScore > game.awayScore;
+  const awayWon = game.homeScore != null && game.awayScore != null && game.awayScore > game.homeScore;
+  const decided = homeWon || awayWon;
+
+  const save = () => {
+    onUpdate("home", localHome.toUpperCase());
+    onUpdate("away", localAway.toUpperCase());
+    onUpdate("homeScore", localHomeScore === "" ? null : parseInt(localHomeScore));
+    onUpdate("awayScore", localAwayScore === "" ? null : parseInt(localAwayScore));
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <div style={{ background: "#0a0a0a", borderRadius: 6, border: "1px solid #15803d44", padding: 8 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 40px 40px 1fr auto", gap: 6, alignItems: "center" }}>
+          <input value={localHome} onChange={(e) => setLocalHome(e.target.value)} placeholder="HOME"
+            style={{ fontSize: 9, padding: "3px 6px", borderRadius: 3, border: "1px solid #333", background: "#111", color: "#00d8a8", fontFamily: "inherit", textTransform: "uppercase" }} />
+          <input type="number" value={localHomeScore} onChange={(e) => setLocalHomeScore(e.target.value)} placeholder="0"
+            style={{ fontSize: 9, padding: "3px 4px", borderRadius: 3, border: "1px solid #333", background: "#111", color: "#fff", fontFamily: "inherit", textAlign: "center" }} />
+          <input type="number" value={localAwayScore} onChange={(e) => setLocalAwayScore(e.target.value)} placeholder="0"
+            style={{ fontSize: 9, padding: "3px 4px", borderRadius: 3, border: "1px solid #333", background: "#111", color: "#fff", fontFamily: "inherit", textAlign: "center" }} />
+          <input value={localAway} onChange={(e) => setLocalAway(e.target.value)} placeholder="AWAY"
+            style={{ fontSize: 9, padding: "3px 6px", borderRadius: 3, border: "1px solid #333", background: "#111", color: "#00d8a8", fontFamily: "inherit", textTransform: "uppercase" }} />
+          <div style={{ display: "flex", gap: 4 }}>
+            <button onClick={save} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid #15803d", background: "#15803d33", color: "#15803d", cursor: "pointer", fontFamily: "inherit" }}>✓</button>
+            <button onClick={onRemove} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid #dc2626", background: "#dc262622", color: "#dc2626", cursor: "pointer", fontFamily: "inherit" }}>✕</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
-      onClick={() => abbr && navigateToTeam?.(abbr)}
       style={{
-        display: "flex", alignItems: "center", gap: 6,
-        padding: "4px 6px", borderRadius: 4,
-        background: teamColors.bg, color: teamColors.fg,
-        cursor: abbr ? "pointer" : "default",
-        fontSize: 9, opacity: abbr ? 1 : 0.4,
+        background: "#0a0a0a", borderRadius: 6, border: "1px solid #1a1a1a", padding: "6px 8px",
+        cursor: editable ? "pointer" : "default",
       }}
+      onClick={() => editable && setEditing(true)}
     >
-      <span style={{ fontSize: 8, fontWeight: "bold", opacity: 0.7 }}>#{seed}</span>
-      <span style={{ fontWeight: "bold" }}>{abbr}</span>
-      <span style={{ fontSize: 8, marginLeft: "auto", opacity: 0.8 }}>{record}</span>
+      <div style={{ display: "grid", gridTemplateColumns: "24px 1fr 32px 12px 32px 1fr 24px", alignItems: "center", gap: 4 }}>
+        <img src={`/logos/${game.home}.png`} alt="" style={{ width: 20, height: 20, objectFit: "contain" }} onError={(e) => { e.target.style.display = "none"; }} />
+        <div onClick={(e) => { e.stopPropagation(); navigateToTeam?.(game.home); }} style={{ cursor: "pointer" }}>
+          <div style={{ fontSize: 10, fontWeight: "bold", color: decided && homeWon ? "#22c55e" : "#e0e0e0" }}>{game.home || "TBD"}</div>
+          <div style={{ fontSize: 7, color: "#555" }}>{getRecord(game.home)}</div>
+        </div>
+        <div style={{ fontSize: 14, fontWeight: "bold", color: decided && homeWon ? "#22c55e" : "#888", textAlign: "center" }}>
+          {game.homeScore != null ? game.homeScore : "-"}
+        </div>
+        <div style={{ fontSize: 8, color: "#333", textAlign: "center" }}>@</div>
+        <div style={{ fontSize: 14, fontWeight: "bold", color: decided && awayWon ? "#22c55e" : "#888", textAlign: "center" }}>
+          {game.awayScore != null ? game.awayScore : "-"}
+        </div>
+        <div onClick={(e) => { e.stopPropagation(); navigateToTeam?.(game.away); }} style={{ cursor: "pointer", textAlign: "right" }}>
+          <div style={{ fontSize: 10, fontWeight: "bold", color: decided && awayWon ? "#22c55e" : "#e0e0e0" }}>{game.away || "TBD"}</div>
+          <div style={{ fontSize: 7, color: "#555" }}>{getRecord(game.away)}</div>
+        </div>
+        <img src={`/logos/${game.away}.png`} alt="" style={{ width: 20, height: 20, objectFit: "contain", justifySelf: "end" }} onError={(e) => { e.target.style.display = "none"; }} />
+      </div>
+      {editable && (
+        <div style={{ fontSize: 7, color: "#333", textAlign: "center", marginTop: 4, letterSpacing: 1 }}>CLICK TO EDIT</div>
+      )}
     </div>
   );
 }

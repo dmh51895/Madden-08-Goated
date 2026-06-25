@@ -542,7 +542,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
 
     switch (panel) {
       case "home":
-        return <HomePage {...sharedProps} panel={panel} setPanel={setPanel} newsImage={newsImage} gotwImage={gotwImage} onNewsImageUpload={handleNewsImageUpload} onGOTWImageUpload={handleGOTWImageUpload} />;
+        return <HomePage {...sharedProps} panel={panel} setPanel={setPanel} newsImage={newsImage} gotwImage={gotwImage} onNewsImageUpload={handleNewsImageUpload} onGOTWImageUpload={handleGOTWImageUpload} onUpdateSettings={handleSettingsUpdate} />;
       case "standings":
         return <StandingsPage {...sharedProps} />;
       case "teams":
@@ -599,6 +599,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
             duplicateCount={duplicateNames.length}
             currentUser={currentUser}
             setCurrentUser={setCurrentUser}
+            teams={TEAMS_LIST}
           />
         );
       default:
@@ -693,15 +694,15 @@ function LeagueHeader({ navigateToTeam, leagueName }) {
   return (
     <div style={{ background: "#050505", borderBottom: "1px solid #161616" }}>
       {/* Logo strip */}
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: 6, padding: "6px 10px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: 4, padding: "6px 10px" }}>
         {TEAM_ABBRS.map((abbr) => (
           <img
             key={abbr}
             src={`/logos/${abbr}.png`}
             alt={abbr}
             title={abbr}
-            width={32}
-            height={32}
+            width={28}
+            height={28}
             onError={(e) => { e.currentTarget.style.display = "none"; }}
             onClick={() => navigateToTeam?.(abbr)}
             style={{ cursor: "pointer", objectFit: "contain", opacity: 0.92, transition: "opacity 0.12s" }}
