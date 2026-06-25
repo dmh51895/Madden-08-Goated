@@ -9,9 +9,20 @@ export default function SettingsPage({
   onTradeChartUpload, onPlayerStatsUpload, onStandingsUpload, onTeamStatsUpload,
   onGameLogUpload, onExportRoster, onClearAll, duplicateCount,
   currentUser, setCurrentUser, teams,
+  canLeague = true, canEdit = true,
 }) {
   const [username, setUsername] = useState("");
   const [role, setRole] = useState(ROLES.VIEWER);
+
+  // Background image upload -> stored as a data URL in settings (overrides /background.jpg).
+  const handleBackgroundFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => onUpdateSettings({ backgroundImage: ev.target.result });
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
 
   const handleFile = (handler) => (e) => {
     const file = e.target.files[0];
@@ -100,12 +111,42 @@ export default function SettingsPage({
               {darkMode ? "ON" : "OFF"}
             </button>
           </div>
+          {canLeague && (
+            <div style={{ marginTop: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                <span style={{ fontSize: 9, color: "#aaa" }}>Background image</span>
+                <span style={{ display: "flex", gap: 6 }}>
+                  <label style={{ fontSize: 8, padding: "3px 10px", borderRadius: 8, border: "1px solid #00d8a8", color: "#00d8a8", cursor: "pointer" }}>
+                    Upload
+                    <input type="file" accept="image/*" onChange={handleBackgroundFile} style={{ display: "none" }} />
+                  </label>
+                  {settings.backgroundImage && (
+                    <button onClick={() => onUpdateSettings({ backgroundImage: null })}
+                      style={{ fontSize: 8, padding: "3px 10px", borderRadius: 8, border: "1px solid #ff4444", background: "transparent", color: "#ff4444", cursor: "pointer" }}>
+                      Remove
+                    </button>
+                  )}
+                </span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 8, color: "#666" }}>Dim {Math.round((settings.backgroundDim != null ? settings.backgroundDim : 0.85) * 100)}%</span>
+                <input type="range" min={0.4} max={0.98} step={0.01}
+                  value={settings.backgroundDim != null ? settings.backgroundDim : 0.85}
+                  onChange={(e) => onUpdateSettings({ backgroundDim: parseFloat(e.target.value) })}
+                  style={{ width: 140 }} />
+              </div>
+              <div style={{ fontSize: 7, color: "#555", marginTop: 4 }}>
+                Or drop a file at <code>public/background.jpg</code> (served at /background.jpg). Uploaded image overrides it.
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Playoff Bracket Editor */}
         <PlayoffEditor settings={settings} onUpdateSettings={onUpdateSettings} teams={teams} />
 
-        {/* File Uploads */}
+        {/* File Uploads — commissioner only */}
+        {canLeague ? (
         <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>📁 FILE UPLOADS</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -161,6 +202,14 @@ export default function SettingsPage({
             )}
           </div>
         </div>
+        ) : (
+          <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
+            <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>📁 FILE UPLOADS</div>
+            <div style={{ fontSize: 9, color: "#888", lineHeight: 1.5 }}>
+              Uploads and league configuration are restricted to the commissioner. Log in as <b style={{ color: "#ff4444" }}>Full Admin</b> under User Access to manage them.
+            </div>
+          </div>
+        )}
 
         {/* User Login */}
         <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #2a2a2a" }}>
@@ -184,7 +233,7 @@ export default function SettingsPage({
                   style={{ flex: 1, fontSize: 9, padding: "4px 8px", borderRadius: 4, border: "1px solid #333", background: "#111", color: "#00d8a8", fontFamily: "inherit", outline: "none" }} />
                 <select value={role} onChange={(e) => setRole(e.target.value)}
                   style={{ fontSize: 9, padding: "4px 6px", borderRadius: 4, border: "1px solid #333", background: "#111", color: "#00d8a8", fontFamily: "inherit" }}>
-                  {Object.entries(ROLE_LABELS).filter(([k]) => k !== "0" && k !== "1").map(([k, v]) => (
+                  {Object.entries(ROLE_LABELS).filter(([k]) => k !== "1").map(([k, v]) => (
                     <option key={k} value={k}>{v}</option>
                   ))}
                 </select>
@@ -199,7 +248,8 @@ export default function SettingsPage({
           </div>
         </div>
 
-        {/* Danger Zone */}
+        {/* Danger Zone — commissioner only */}
+        {canLeague && (
         <div style={{ gridColumn: "1 / -1", background: "#0c0c0c", borderRadius: 8, padding: 12, border: "1px solid #ff444433" }}>
           <div style={{ fontSize: 10, fontWeight: "bold", color: "#ff4444", marginBottom: 8 }}>⚠️ DANGER ZONE</div>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -212,6 +262,7 @@ export default function SettingsPage({
             <span style={{ fontSize: 7, color: "#666" }}>Wipes IndexedDB. You'll need to re-upload rosters.</span>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { TEAM_IDS, TEAM_IDS_BY_ABBR, POSITION_IDS } from "../data/maddenIds";
 import { parseNzaroster, parseColleges, parseDraftBoard, parseDraftPicks, parseTradeChart, parsePlayerStats, parseStandings, parseTeamStats, parseCSV, downloadCSV, parseGameLog, aggregateGameLogs, exportNzaroster } from "../data/csvParser";
 import { loadDB, saveDB, clearDB, getDefaultData, migrateFromLocalStorage } from "../data/indexedDB";
 import { getSeasonData, createEmptySeason, updateSeasonData, signPlayer as storeSignPlayer, releasePlayer as storeReleasePlayer, changePosition as storeChangePosition, changeJersey as storeChangeJersey } from "../data/dataStore";
-import { ROLES, ROLE_LABELS, ROLE_COLORS, canAccessPage, canSubmitChanges, canManageTeam } from "../data/adminRoles";
+import { ROLES, ROLE_LABELS, ROLE_COLORS, canAccessPage, canSubmitChanges, canManageTeam, canManageLeague } from "../data/adminRoles";
 import { generateSchedule as engineGenerateSchedule, addGame, removeGame, getAvailableWeeks } from "../data/scheduleEngine";
 import { getBreakdownDisplay, analyzeBreakdown } from "../data/rosterEngine";
 import { findDuplicateNames, applyRenames, suggestRenames } from "../data/duplicates";
@@ -45,8 +45,12 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   const [panel, setPanel] = useState(initialPanel);
   const [selectedTeam, setSelectedTeam] = useState(initialTeam);
   const [selectedPlayer, setSelectedPlayer] = useState(initialPlayer);
-  const [currentUser, setCurrentUser] = useState(null);
   const [teamFilter, setTeamFilter] = useState(initialTeam);
+
+  // Logged-in user is stored in appData (persisted in IndexedDB) so the role
+  // survives navigation/reload — local state would reset to null on every page.
+  const currentUser = appData.currentUser || null;
+  const setCurrentUser = (user) => setAppData((prev) => ({ ...prev, currentUser: user }));
 
   // Promise-based confirmation for every data mutation (see ConfirmDialog).
   const confirm = useConfirm();
@@ -98,6 +102,23 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   const seasonData = getSeasonData(appData, currentSeason);
   const settings = seasonData.settings || {};
   const darkMode = settings.darkMode !== undefined ? settings.darkMode : true;
+
+  // ── Role-based access (User Access) ──────────────────────
+  // Local-first rule: if nobody is logged in, treat as full admin so the app
+  // works out of the box. Logging in as a specific role then applies that
+  // role's permissions. (Self-assigned roles — convenience gating to prevent
+  // accidental edits, not hard security, since this is a local browser app.)
+  const role = currentUser?.role;
+  const loggedIn = !!currentUser;
+  const isAdminUser = !loggedIn || role === ROLES.ADMIN;
+  const isModUser   = isAdminUser || role === ROLES.MODERATOR;
+  const canEdit     = !loggedIn || canSubmitChanges(role);  // admin / mod / team owner
+  const canLeague   = !loggedIn || canManageLeague(role);   // admin only (commissioner)
+  const requireEdit = async () => {
+    if (canEdit) return true;
+    await confirm({ title: "Permission needed", body: `Your role (${ROLE_LABELS[role] || "Viewer"}) can't make changes. Log in as Admin, Moderator, or Team Owner under Settings → User Access.`, confirmLabel: "OK" });
+    return false;
+  };
   const toggleSettings = settings.toggleSettings || {};
   // Homepage hero/GOTW images (stored as data URLs in appData)
   const newsImage = seasonData.newsImage || null;
@@ -228,6 +249,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   };
 
   const handleClearGameLogs = async () => {
+    if (!(await requireEdit())) return;
     if (gameLogs.length && !(await confirm({ title: "Clear game logs", body: `Remove all ${gameLogs.length} uploaded game log${gameLogs.length === 1 ? "" : "s"} for ${currentSeason}? Standings derived from them will reset.`, danger: true, confirmLabel: "Clear logs" }))) return;
     updateData({ gameLogs: [] });
   };
@@ -257,6 +279,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   const nameOf = (id) => { const p = playerById(id); return p ? `${p.firstName || ""} ${p.lastName || ""}`.trim() || "this player" : "this player"; };
 
   const handleAddManualResult = async (result) => {
+    if (!(await requireEdit())) return;
     const a = result?.away ?? "Away", h = result?.home ?? "Home";
     const as = result?.awayScore, hs = result?.homeScore;
     const score = (as != null && hs != null) ? ` (${a} ${as} – ${h} ${hs})` : "";
@@ -271,6 +294,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   };
 
   const handleRemoveManualResult = async (id) => {
+    if (!(await requireEdit())) return;
     if (!(await confirm({ title: "Remove result", body: "Remove this manually recorded result from the standings?", danger: true, confirmLabel: "Remove" }))) return;
     setAppData((prev) => {
       const cur = getSeasonData(prev, currentSeason);
@@ -294,6 +318,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
 
   // Apply a batch of renames to fix duplicate names. Flushes through to NZA roundtrip.
   const handleApplyRenames = async (renames) => {
+    if (!(await requireEdit())) return;
     const n = Array.isArray(renames) ? renames.length : Object.keys(renames || {}).length;
     if (!(await confirm({ title: "Apply renames", body: `Apply ${n} player rename${n === 1 ? "" : "s"} to the ${currentSeason} roster?` }))) return;
     setAppData((prev) => {
@@ -312,22 +337,26 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
 
   // ── Team Management Actions ─────────────────────────────
   const handleSignPlayer = async (playerId, targetTeam) => {
+    if (!(await requireEdit())) return;
     if (!(await confirm({ title: "Sign player", body: `Sign ${nameOf(playerId)} to ${targetTeam} for ${currentSeason}?` }))) return;
     setAppData((prev) => storeSignPlayer(prev, playerId, targetTeam, currentSeason));
   };
 
   const handleReleasePlayer = async (playerId) => {
+    if (!(await requireEdit())) return;
     if (!(await confirm({ title: "Release player", body: `Release ${nameOf(playerId)} to free agency for ${currentSeason}?`, danger: true, confirmLabel: "Release" }))) return;
     setAppData((prev) => storeReleasePlayer(prev, playerId, currentSeason));
   };
 
   const handleChangePosition = async (playerId, newPosId) => {
+    if (!(await requireEdit())) return;
     const posAbbr = POSITION_IDS?.[newPosId]?.abbr || `position #${newPosId}`;
     if (!(await confirm({ title: "Change position", body: `Change ${nameOf(playerId)} to ${posAbbr}?` }))) return;
     setAppData((prev) => storeChangePosition(prev, playerId, newPosId, currentSeason));
   };
 
   const handleChangeJersey = async (playerId, newNum) => {
+    if (!(await requireEdit())) return;
     if (!(await confirm({ title: "Change jersey", body: `Change ${nameOf(playerId)}'s jersey to #${newNum}?` }))) return;
     setAppData((prev) => storeChangeJersey(prev, playerId, newNum, currentSeason));
   };
@@ -385,6 +414,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
 
   // ── Custom schedule builder (#5) ────────────────────────
   const handleAddGame = async (week, away, home) => {
+    if (!(await requireEdit())) return;
     week = Number(week);
     if (!week || !away || !home || away === home) { await confirm({ title: "Can't add game", body: "Pick a week/round and two different teams.", confirmLabel: "OK" }); return; }
     const cur = getSeasonData(appData, currentSeason);
@@ -398,6 +428,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   };
 
   const handleRemoveGame = async (gameId) => {
+    if (!(await requireEdit())) return;
     if (!(await confirm({ title: "Remove game", body: "Remove this game from the schedule?", danger: true, confirmLabel: "Remove" }))) return;
     setAppData((prev) => {
       const c = getSeasonData(prev, currentSeason);
@@ -579,6 +610,8 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
       case "settings":
         return (
           <SettingsPage
+            canLeague={canLeague}
+            canEdit={canEdit}
             darkMode={darkMode}
             settings={settings}
             onUpdateSettings={handleSettingsUpdate}
@@ -612,8 +645,17 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
   const text = darkMode ? "#e0e0e0" : "#111";
   const textMuted = darkMode ? "#999" : "#666";
 
+  // Optional background image (PCFT-style fixed field). Uses an uploaded data
+  // URL from settings if present, otherwise /background.jpg. A translucent
+  // overlay keeps content panels readable; if no image exists the overlay over
+  // the solid colour just looks like the solid colour (graceful no-op).
+  const bgImage = settings.backgroundImage || "/background.jpg";
+  const dim = settings.backgroundDim != null ? settings.backgroundDim : 0.85;
+  const ov = darkMode ? "8,8,10" : "245,245,245";
+  const rootBackground = `linear-gradient(rgba(${ov},${dim}), rgba(${ov},${Math.min(0.97, dim + 0.05)})), url("${bgImage}") center center / cover no-repeat fixed, ${bg}`;
+
   return (
-    <div style={{ fontFamily: "'Courier New', monospace", background: bg, minHeight: "100vh", color: text, fontSize: 12 }}>
+    <div style={{ fontFamily: "'Courier New', monospace", background: rootBackground, backgroundColor: bg, minHeight: "100vh", color: text, fontSize: 12 }}>
       {/* ── Header ─────────────────────────────────────────── */}
       <div style={{ position: "sticky", top: 0, zIndex: 100, background: darkMode ? "#050505" : "#eee", borderBottom: `1px solid ${border}` }}>
         {/* Brand strip */}
@@ -657,7 +699,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
             panel={panel}
             setPanel={setPanel}
             duplicateCount={duplicateNames.length}
-            isAdmin={!!currentUser && (currentUser.role === ROLES.ADMIN || currentUser.role === ROLES.MODERATOR)}
+            isAdmin={isModUser}
           />
         </div>
       </div>
