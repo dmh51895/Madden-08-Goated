@@ -131,6 +131,20 @@ export default function SettingsPage({
             </label>
           </div>
 
+          {/* Download template */}
+          <div style={{ marginTop: 8, padding: 8, background: "#0a0a0a", borderRadius: 6, border: "1px solid #2a2a2a" }}>
+            <div style={{ fontSize: 8, color: "#888", marginBottom: 6 }}>NEED A TEMPLATE?</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              <a href="/templates/player-stats-template.csv" download
+                style={{ fontSize: 8, padding: "4px 10px", borderRadius: 4, border: "1px solid #7c8cff", background: "#7c8cff11", color: "#7c8cff", cursor: "pointer", textDecoration: "none" }}>
+                📥 Player Stats CSV
+              </a>
+            </div>
+            <div style={{ fontSize: 7, color: "#555", marginTop: 4 }}>
+              Two-row header format: category row (PASSING, RUSHING, etc.) + column names. Match team names to your roster abbreviations.
+            </div>
+          </div>
+
           {/* Export current roster as a valid NZA-editor CSV */}
           <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #2a2a2a" }}>
             <div style={{ fontSize: 9, color: "#aaa", marginBottom: 6 }}>EXPORT</div>
