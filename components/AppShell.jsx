@@ -433,8 +433,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
     // of just "/player/") stops this effect from racing navigateToPlayer's push
     // and clobbering it with router.replace("/player/").
     let target;
-    if (panel === "standings") target = "/";
-    else if (panel === "player" && selectedPlayer != null && selectedPlayer !== "") target = `/player/${selectedPlayer}/`;
+    if (panel === "player" && selectedPlayer != null && selectedPlayer !== "") target = `/player/${selectedPlayer}/`;
     else target = `/${panel}/`;
 
     if (pathname !== target && pathname !== target.replace(/\/$/, "")) {

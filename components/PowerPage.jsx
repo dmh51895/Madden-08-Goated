@@ -6,11 +6,13 @@ export default function PowerPage({ standings, teams, navigateToTeam }) {
 
   const powerRankings = useMemo(() => {
     return [...standings]
-      .sort((a, b) => a.powerRanking - b.powerRanking)
+      .sort((a, b) => (a.powerRanking ?? 99) - (b.powerRanking ?? 99))
       .map((t, i) => ({
         ...t,
         powerRanking: i + 1,
-        previousRank: Math.max(1, i + 1 + Math.floor(Math.random() * 6) - 3),
+        // Deterministic: movement vs the team's stored prior rank (0 if none).
+        // Must NOT be random — that causes a server/client hydration mismatch (#425).
+        previousRank: t.previousRank ?? t.powerRanking ?? i + 1,
       }));
   }, [standings]);
 
