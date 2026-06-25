@@ -652,12 +652,14 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
         </div>
 
         {/* Grouped nav (mirrors original PCFT dropdown structure) */}
-        <NavBar
-          panel={panel}
-          setPanel={setPanel}
-          duplicateCount={duplicateNames.length}
-          isAdmin={!!currentUser && (currentUser.role === ROLES.ADMIN || currentUser.role === ROLES.MODERATOR)}
-        />
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <NavBar
+            panel={panel}
+            setPanel={setPanel}
+            duplicateCount={duplicateNames.length}
+            isAdmin={!!currentUser && (currentUser.role === ROLES.ADMIN || currentUser.role === ROLES.MODERATOR)}
+          />
+        </div>
       </div>
 
       {/* ── Panel Content ─────────────────────────────────── */}

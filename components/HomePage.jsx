@@ -423,9 +423,9 @@ function PlayoffBracket({ standings, teams, navigateToTeam, year }) {
             {byes} TEAM{byes > 1 ? "S" : ""} WITH BYE: {bracketSeeds.slice(0, byes).map((t) => t.abbr).join(", ")}
           </div>
         )}
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${wcRounds.length}, 1fr)`, gap: 8 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {wcRounds.map((match, i) => (
-            <div key={i} style={{ background: "#0a0a0a", borderRadius: 6, border: "1px solid #1a1a1a", padding: 8 }}>
+            <div key={i} style={{ background: "#0a0a0a", borderRadius: 6, border: "1px solid #1a1a1a", padding: 8, minWidth: 130, flex: "1 1 130px", maxWidth: 200 }}>
               <div style={{ fontSize: 7, color: "#444", letterSpacing: 1, marginBottom: 6 }}>WILD CARD</div>
               <MatchupSlot match={match} />
             </div>
