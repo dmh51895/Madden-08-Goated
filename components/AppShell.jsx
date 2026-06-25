@@ -27,6 +27,7 @@ import CoachesPage from "./CoachesPage";
 import PowerPage from "./PowerPage";
 import SettingsPage from "./SettingsPage";
 import BreakdownPage from "./BreakdownPage";
+import SetupSeasonPage from "./SetupSeasonPage";
 import TeamMgmtPage from "./TeamMgmtPage";
 import TradeChartPage from "./TradeChartPage";
 import DuplicatesPage from "./DuplicatesPage";
@@ -410,6 +411,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
     const y = parseInt(input, 10);
     if (!Number.isFinite(y)) { await confirm({ title: "Invalid year", body: `"${input}" isn't a valid year.`, confirmLabel: "OK" }); return; }
     await handleSeasonChange(y);
+    setPanel("setup");
   };
 
   // ── Custom schedule builder (#5) ────────────────────────
@@ -434,6 +436,12 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
       const c = getSeasonData(prev, currentSeason);
       return updateSeasonData(prev, currentSeason, { schedule: removeGame(c.schedule || [], gameId) });
     });
+  };
+
+  const handleGenerateSchedule = async () => {
+    if (!(await confirm({ title: "Auto-generate schedule", body: "Generate a full round-robin schedule? This replaces the current schedule." }))) return;
+    const newSchedule = engineGenerateSchedule(TEAMS_LIST, settings.weeksPerSeason || 16, currentSeason);
+    setAppData((prev) => updateSeasonData(prev, currentSeason, { schedule: newSchedule }));
   };
 
   const handleSettingsUpdate = (newSettings) => {
@@ -607,6 +615,20 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
         return <TeamMgmtPage {...sharedProps} onSignPlayer={handleSignPlayer} onReleasePlayer={handleReleasePlayer} onChangePosition={handleChangePosition} onChangeJersey={handleChangeJersey} />;
       case "duplicates":
         return <DuplicatesPage duplicates={duplicateNames} onApplyRenames={handleApplyRenames} />;
+      case "setup":
+        return (
+          <SetupSeasonPage
+            settings={settings}
+            onUpdateSettings={handleSettingsUpdate}
+            teams={TEAMS_LIST}
+            schedule={schedule}
+            onAddGame={handleAddGame}
+            onRemoveGame={handleRemoveGame}
+            onGenerateSchedule={handleGenerateSchedule}
+            currentSeason={currentSeason}
+            canEdit={!currentUser || currentUser.role === 0}
+          />
+        );
       case "settings":
         return (
           <SettingsPage
@@ -787,6 +809,7 @@ const NAV_GROUPS = [
       { panelId: "records",     label: "Records" },
       { panelId: "playoffs",    label: "Playoffs" },
       { panelId: "breakdown",   label: "League Breakdown" },
+      { panelId: "setup",       label: "Season Setup" },
     ],
   },
   {
