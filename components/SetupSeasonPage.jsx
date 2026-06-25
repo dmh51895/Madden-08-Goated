@@ -24,7 +24,6 @@ export default function SetupSeasonPage({
   const seasonType = settings?.seasonType || "season";
   const tournamentTeams = settings?.tournamentTeams || 12;
   const playoffsEnabled = settings?.playoffsEnabled || false;
-  const gamesPerSeason = settings?.gamesPerSeason || 16;
 
   const hasGames = (schedule || []).length > 0;
   const hasPlayoffGames = useMemo(() => {
@@ -68,7 +67,6 @@ export default function SetupSeasonPage({
   const handleTournamentFormatChange = (n) => {
     if (!canEdit) return;
     onUpdateSettings({ tournamentTeams: n });
-    if (setPanel) setPanel("schedules");
   };
 
   return (
@@ -120,22 +118,16 @@ export default function SetupSeasonPage({
             <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: BORDER }}>
               <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>SEASON CONFIG</div>
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 8, color: "#666", marginBottom: 2 }}>Games Per Season</div>
+                <div style={{ fontSize: 8, color: "#666", marginBottom: 2 }}>Games per season</div>
                 <input
                   type="number"
-                  value={gamesPerSeason}
-                  onChange={(e) => canEdit && onUpdateSettings({ gamesPerSeason: parseInt(e.target.value) || 16 })}
-                  style={{ width: 80, fontSize: 9, padding: "4px 8px", borderRadius: 4, border: "1px solid #333", background: "#111", color: "#00d8a8", fontFamily: "inherit" }}
-                />
-              </div>
-              <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 8, color: "#666", marginBottom: 2 }}>Weeks Per Season</div>
-                <input
-                  type="number"
+                  min={1}
+                  max={17}
                   value={settings?.weeksPerSeason || 16}
-                  onChange={(e) => canEdit && onUpdateSettings({ weeksPerSeason: parseInt(e.target.value) || 16 })}
+                  onChange={(e) => canEdit && onUpdateSettings({ weeksPerSeason: parseInt(e.target.value) || 16, gamesPerSeason: parseInt(e.target.value) || 16 })}
                   style={{ width: 80, fontSize: 9, padding: "4px 8px", borderRadius: 4, border: "1px solid #333", background: "#111", color: "#00d8a8", fontFamily: "inherit" }}
                 />
+                <span style={{ fontSize: 7, color: "#555", marginLeft: 8 }}>each team plays once per week → {settings?.weeksPerSeason || 16} weeks</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, paddingTop: 10, borderTop: INNER_BORDER }}>
                 <div>
@@ -162,7 +154,7 @@ export default function SetupSeasonPage({
           {seasonType === "tournament" && (
             <div style={{ background: "#0c0c0c", borderRadius: 8, padding: 12, border: BORDER }}>
               <div style={{ fontSize: 10, fontWeight: "bold", color: "#ffd700", marginBottom: 8 }}>TOURNAMENT FORMAT</div>
-              <div style={{ fontSize: 8, color: "#666", marginBottom: 8 }}>Pick a format to go enter your bracket matchups on the Schedule page.</div>
+              <div style={{ fontSize: 8, color: "#666", marginBottom: 8 }}>Pick a bracket size, then add your matchups round by round in the builder on the right.</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
                 {[8, 10, 12].map((n) => (
                   <button
@@ -194,20 +186,15 @@ export default function SetupSeasonPage({
                 <span style={{ fontSize: 8, color: "#666" }}>teams</span>
               </div>
               <div style={{ fontSize: 8, color: "#555", lineHeight: 1.5 }}>
-                Bracket auto-generates on the Home page based on standings seeding.
-                Byes: 8=0, 10=2, 12=4.
+                The {tournamentTeams}-team bracket goes live on the Home page right away, seeded from standings. Byes: 8=0, 10=2, 12=4.
               </div>
-              <button
-                onClick={() => setPanel && setPanel("schedules")}
-                style={{ width: "100%", marginTop: 10, padding: "8px 12px", borderRadius: 6, border: "1px solid #15803d", background: "#15803d15", color: "#15803d", fontSize: 9, fontWeight: "bold", fontFamily: "inherit", cursor: "pointer" }}
-              >
-                ➜ ENTER TOURNAMENT GAMES ON SCHEDULE PAGE
-              </button>
             </div>
           )}
 
-          {/* Playoff Bracket Editor */}
-          <PlayoffEditor settings={settings} onUpdateSettings={onUpdateSettings} teams={teams} />
+          {/* Playoff Bracket Editor — regular season w/ playoffs only */}
+          {seasonType === "season" && playoffsEnabled && (
+            <PlayoffEditor settings={settings} onUpdateSettings={onUpdateSettings} teams={teams} />
+          )}
         </div>
 
         {/* ── RIGHT: Schedule Builder ── */}
@@ -219,7 +206,7 @@ export default function SetupSeasonPage({
 
             {seasonType === "tournament" && (
               <div style={{ fontSize: 8, color: "#666", marginBottom: 8 }}>
-                Use week numbers as rounds — Week 1 = Round 1, Week 2 = Round 2, etc. Enter matchups below or go to the full Schedule page.
+                Each round is a column of the bracket. Add Round 1 matchups, then step to Round 2 with ▶, and so on.
               </div>
             )}
 
@@ -231,7 +218,7 @@ export default function SetupSeasonPage({
                   {seasonType === "tournament" ? `ROUND ${buildWeek}` : `WEEK ${buildWeek}`}
                 </div>
                 <div style={{ fontSize: 7, color: "#555" }}>
-                  {scheduleByWeek[buildWeek]?.length || 0} games
+                  {scheduleByWeek[buildWeek]?.length || 0} {seasonType === "tournament" ? "matchups" : "games"}
                 </div>
               </div>
               <button onClick={() => setBuildWeek(buildWeek + 1)} style={navBtn}>▶</button>

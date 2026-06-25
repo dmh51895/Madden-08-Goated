@@ -586,7 +586,7 @@ export default function AppShell({ initialPanel = "home", initialTeam = null, in
       case "teams":
         return <TeamsPage {...sharedProps} selectedTeam={selectedTeam} allSeasons={appData.seasons} />;
       case "schedules":
-        return <SchedulesPage {...sharedProps} schedule={schedule} gameLogs={gameLogs} onUploadGameLog={handleGameLogUpload} onClearGameLogs={handleClearGameLogs} onAddGame={handleAddGame} onRemoveGame={handleRemoveGame} />;
+        return <SchedulesPage {...sharedProps} schedule={schedule} gameLogs={gameLogs} onUploadGameLog={handleGameLogUpload} onClearGameLogs={handleClearGameLogs} onRemoveGame={handleRemoveGame} />;
       case "leaders":
         return <LeadersPage {...sharedProps} />;
       case "player":
